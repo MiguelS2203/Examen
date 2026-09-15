@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas de Antibióticos — Guía de estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet-900:#241A3D;
+    --violet-700:#3B2E5C;
+    --violet-500:#5B4A87;
+    --violet-100:#EAE4F5;
+    --safranin-600:#C43D6E;
+    --safranin-400:#DE6E92;
+    --safranin-100:#FBE6ED;
+    --paper:#F0F1EA;
+    --paper-raised:#FFFFFF;
+    --ink:#221C2E;
+    --ink-soft:#5B5568;
+    --line:#DAD6E4;
+    --good:#2E7D52;
+    --bad:#B33B3B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- layout shell ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns:250px 1fr;
+    min-height:100vh;
+  }
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr;}
+  }
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    background:var(--violet-900);
+    color:#EDE9F7;
+    padding:28px 20px 28px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+  @media (max-width:860px){
+    .sidebar{
+      padding:20px;
+      flex-direction:row;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .sidebar .brand-block{flex:1 1 100%;}
+    .sidebar nav{display:none;}
+  }
+  .brand-block .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--safranin-400);
+    margin:0 0 6px 0;
+  }
+  .brand-block h1{
+    font-size:26px;
+    line-height:1.1;
+    margin:0 0 6px 0;
+    color:#fff;
+  }
+  .brand-block p{
+    font-size:13px;
+    color:#BEB4DA;
+    margin:0;
+    line-height:1.5;
+  }
+  .stain-legend{
+    display:flex;
+    gap:14px;
+    margin-top:4px;
+    font-size:11.5px;
+    color:#C9C0E2;
+  }
+  .stain-legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .dot.pos{background:var(--violet-500);}
+  .dot.neg{background:var(--safranin-600);}
+
+  nav.groups{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    overflow-y:auto;
+  }
+  .group-btn{
+    all:unset;
+    cursor:pointer;
+    padding:9px 10px;
+    border-radius:7px;
+    font-size:13.5px;
+    color:#CEC6E7;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .group-btn:hover{background:rgba(255,255,255,0.06);color:#fff;}
+  .group-btn.active{background:var(--safranin-600);color:#fff;}
+  .group-btn .count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    opacity:0.75;
+  }
+
+  /* ---------- main ---------- */
+  main{padding:30px 34px 60px;max-width:920px;}
+  @media (max-width:600px){main{padding:20px 16px 50px;}}
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:26px;
+  }
+  .modes{
+    display:flex;
+    gap:6px;
+    background:var(--paper-raised);
+    padding:4px;
+    border-radius:10px;
+    border:1px solid var(--line);
+  }
+  .mode-btn{
+    all:unset;
+    cursor:pointer;
+    padding:8px 16px;
+    border-radius:7px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--ink-soft);
+  }
+  .mode-btn.active{background:var(--violet-900);color:#fff;}
+
+  .search-wrap{position:relative;flex:1 1 260px;max-width:340px;}
+  .search-wrap input{
+    width:100%;
+    padding:9px 12px 9px 32px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    font-size:13.5px;
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--ink);
+  }
+  .search-wrap input:focus{outline:2px solid var(--violet-500);outline-offset:1px;}
+  .search-wrap::before{
+    content:"⌕";
+    position:absolute;left:11px;top:50%;transform:translateY(-50%);
+    color:var(--ink-soft);font-size:15px;
+  }
+
+  .mobile-groups{
+    display:none;
+    margin-bottom:20px;
+  }
+  @media (max-width:860px){
+    .mobile-groups{display:block;}
+  }
+  .mobile-groups select{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    font-size:14px;
+    background:var(--paper-raised);
+    color:var(--ink);
+  }
+
+  /* ---------- reference view ---------- */
+  .group-heading{margin-bottom:4px;}
+  .group-heading h2{font-size:23px;margin:0 0 6px;color:var(--violet-900);}
+  .group-mechanism{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    max-width:640px;
+    margin-bottom:22px;
+    padding-left:14px;
+    border-left:3px solid var(--safranin-400);
+  }
+
+  .drug-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .drug-card h3{
+    font-size:17px;
+    margin:0 0 10px;
+    color:var(--ink);
+  }
+  .drug-row{
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:10px;
+    font-size:13.5px;
+    line-height:1.55;
+    margin-bottom:8px;
+  }
+  .drug-row:last-child{margin-bottom:0;}
+  .drug-row .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    color:#fff;
+    align-self:start;
+    padding:3px 7px;
+    border-radius:5px;
+    text-align:center;
+    height:fit-content;
+  }
+  .drug-row.mech .label{background:var(--ink-soft);}
+  .drug-row.spec .label{background:var(--violet-500);}
+  .drug-row.uses .label{background:var(--safranin-600);}
+  .drug-row .val{color:var(--ink);}
+  .no-results{color:var(--ink-soft);font-size:14px;padding:30px 0;}
+
+  /* ---------- casos clínicos ---------- */
+  .specialty-heading{
+    font-size:18px;
+    color:var(--violet-900);
+    margin:30px 0 12px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+  }
+  .specialty-heading:first-child{margin-top:0;}
+  .caso-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .caso-card h4{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:16px;
+    margin:0 0 10px;
+    color:var(--ink);
+  }
+  .caso-row{
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:10px;
+    font-size:13.5px;
+    line-height:1.6;
+    margin-bottom:8px;
+    white-space:pre-line;
+  }
+  .caso-row:last-child{margin-bottom:0;}
+  .caso-row .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    color:#fff;
+    align-self:start;
+    padding:3px 7px;
+    border-radius:5px;
+    text-align:center;
+    height:fit-content;
+    white-space:normal;
+  }
+  .caso-row.scenario .label{background:var(--ink-soft);}
+  .caso-row.regimen .label{background:var(--safranin-600);}
+  .caso-row.pearls .label{background:var(--violet-500);}
+  .caso-row .val{color:var(--ink);}
+
+  /* ---------- flashcards ---------- */
+  .flash-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    padding-top:10px;
+  }
+  .flash-progress{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .flashcard{
+    width:100%;
+    max-width:520px;
+    min-height:260px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:34px 30px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .flashcard .side-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    color:#fff;
+    background:var(--violet-500);
+    padding:3px 9px;
+    border-radius:20px;
+    margin-bottom:16px;
+  }
+  .flashcard.back .side-tag{background:var(--safranin-600);}
+  .flashcard .q{font-size:16.5px;line-height:1.5;color:var(--ink);}
+  .flashcard .ans-name{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    color:var(--violet-900);
+    margin-bottom:10px;
+  }
+  .flashcard .ans-extra{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .flashcard .hint{
+    margin-top:18px;
+    font-size:11.5px;
+    color:#B7B0C9;
+  }
+  .flash-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .flash-controls button{
+    all:unset;
+    cursor:pointer;
+    padding:9px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:500;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    color:var(--ink);
+  }
+  .flash-controls button.primary{background:var(--violet-900);color:#fff;border-color:var(--violet-900);}
+  .flash-controls button:hover{background:var(--violet-100);}
+  .flash-controls button.primary:hover{background:var(--violet-700);}
+
+  /* ---------- quiz ---------- */
+  .quiz-wrap{max-width:600px;}
+  .quiz-score{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .quiz-q{
+    font-size:17px;
+    line-height:1.5;
+    margin-bottom:18px;
+    color:var(--ink);
+  }
+  .quiz-options{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+  .quiz-opt{
+    all:unset;
+    cursor:pointer;
+    padding:12px 15px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    font-size:14px;
+    color:var(--ink);
+  }
+  .quiz-opt:hover{border-color:var(--violet-500);}
+  .quiz-opt.correct{background:#E7F3EC;border-color:var(--good);color:var(--good);font-weight:500;}
+  .quiz-opt.incorrect{background:#FBEAEA;border-color:var(--bad);color:var(--bad);font-weight:500;}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-opt[disabled]:not(.correct):not(.incorrect){opacity:0.55;}
+  .quiz-next{
+    all:unset;
+    cursor:pointer;
+    padding:10px 20px;
+    border-radius:8px;
+    background:var(--violet-900);
+    color:#fff;
+    font-size:13.5px;
+    font-weight:500;
+  }
+  .quiz-next:hover{background:var(--violet-700);}
+  .quiz-done{
+    text-align:center;
+    padding:50px 0;
+  }
+  .quiz-done .big{
+    font-family:'Fraunces',serif;
+    font-size:44px;
+    color:var(--violet-900);
+  }
+  .quiz-done p{color:var(--ink-soft);font-size:14px;margin-bottom:22px;}
+
+  footer.note{
+    margin-top:44px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:#9C96AE;
+    line-height:1.6;
+    max-width:640px;
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand-block">
+      <p class="kicker">GUÍA DE ESTUDIO · FARMACOLOGÍA</p>
+      <h1>Atlas de<br>Antibióticos</h1>
+      <p>Mecanismo, espectro y uso clínico, organizados por grupo farmacológico.</p>
+      <div class="stain-legend">
+        <span><i class="dot pos"></i>Grampositivo</span>
+        <span><i class="dot neg"></i>Gramnegativo</span>
+      </div>
+    </div>
+    <nav class="groups" id="groupNav"></nav>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div class="modes" id="modeSwitch">
+        <button class="mode-btn active" data-mode="ref">Referencia</button>
+        <button class="mode-btn" data-mode="casos">Casos clínicos</button>
+        <button class="mode-btn" data-mode="flash">Fichas</button>
+        <button class="mode-btn" data-mode="quiz">Quiz</button>
+      </div>
+      <div class="search-wrap" id="searchWrap">
+        <input type="text" id="searchInput" placeholder="Buscar antibiótico, germen o caso…">
+      </div>
+    </div>
+
+    <div class="mobile-groups" id="mobileGroups">
+      <select id="groupSelect"></select>
+    </div>
+
+    <div id="view"></div>
+
+    <footer class="note">
+      Material de estudio elaborado a partir de tus propios apuntes y guías (resumen orientado a CACES/residencia y guía farmacológica general). No sustituye guías clínicas locales ni el criterio médico — no incluye dosis.
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const DATA = [
+{
+  group:"Penicilinas",
+  mechanism:"Inhiben la síntesis de la pared celular al unirse a las proteínas fijadoras de penicilina (PBP), bloqueando la transpeptidasa que forma los enlaces cruzados del peptidoglicano. Son bactericidas.",
+  items:[
+    {name:"Penicilina G / Penicilina benzatínica", spectrum:"Streptococcus pyogenes, Treponema pallidum, Neisseria meningitidis, anaerobios orales, Clostridium.", uses:"Fiebre reumática (tratamiento de la infección estreptocócica de base). Escarlatina (benzatínica: 600 000 UI si <27 kg, 1 200 000 UI si >27 kg). Profilaxis intraparto del estreptococo del grupo B. Erisipela. Faringoamigdalitis estreptocócica. Sífilis. Meningitis meningocócica."},
+    {name:"Penicilina V", spectrum:"Similar a penicilina G, espectro grampositivo (estreptococos). Formulación oral.", uses:"Faringitis estreptocócica leve. Profilaxis de fiebre reumática. Infecciones dentales leves."},
+    {name:"Oxacilina / Cloxacilina / Dicloxacilina / Nafcilina", spectrum:"Staphylococcus aureus sensible a meticilina (MSSA) — resistentes a la penicilinasa estafilocócica.", uses:"Artritis séptica por MSSA. Endocarditis por S. aureus sensible (oxacilina/nafcilina). Infecciones de piel y tejidos blandos. Impétigo extenso (cloxacilina, junto con lavado de peróxido de benzoilo)."},
+    {name:"Ampicilina", spectrum:"Listeria monocytogenes, Enterococcus, estreptococos, algunos gramnegativos (E. coli, Proteus, H. influenzae no productor de betalactamasa).", uses:"Meningitis en >50 años o inmunosuprimidos (añadida a ceftriaxona+vancomicina para cubrir Listeria). Rotura prematura de membranas con infección (+ eritromicina IV). Endocarditis en >50 años/inmunosuprimidos (Listeria) y endocarditis por enterococo (+ aminoglucósido). Infecciones urinarias no complicadas."},
+    {name:"Amoxicilina", spectrum:"S. pneumoniae, H. influenzae; Helicobacter pylori en esquema combinado.", uses:"Otitis media aguda. Sinusitis bacteriana aguda. Neumonía adquirida en la comunidad ambulatoria sin comorbilidades (primera línea) y NAC pediátrica. Erisipela. Erradicación de H. pylori (con claritromicina e IBP). Profilaxis de endocarditis en procedimientos dentales."},
+    {name:"Amoxicilina-ácido clavulánico", spectrum:"Productores de betalactamasas: S. aureus sensible, H. influenzae, Moraxella catarrhalis, E. coli, anaerobios.", uses:"Sinusitis/otitis recurrentes. Mordeduras de animal o humano. Infecciones de piel y tejidos blandos resistentes."},
+    {name:"Ampicilina/sulbactam", spectrum:"Cobertura mixta Gram+/Gram-/anaerobios (vía parenteral).", uses:"Profilaxis antibiótica en cesárea. Endometritis posparto tras cesárea (+ gentamicina + clindamicina). Neumonía hospitalizada como alternativa (+ macrólido). Apendicitis (alternativa a ceftriaxona+metronidazol). Diverticulitis complicada. Infecciones intraabdominales y ginecológicas, neumonía por aspiración."},
+    {name:"Piperacilina/tazobactam", spectrum:"Pseudomonas aeruginosa, enterobacterias, anaerobios, estreptococos, S. aureus sensible.", uses:"Neumonía con sospecha de Pseudomonas (bronquiectasias, uso repetido de antibióticos, hospitalizaciones frecuentes). Infecciones intraabdominales graves, sepsis de origen abdominal o urinario, neutropenia febril, pie diabético infectado."}
+  ]
+},
+{
+  group:"Cefalosporinas",
+  mechanism:"Mismo mecanismo que las penicilinas (inhibición de PBP). Se clasifican en generaciones: a mayor generación, mayor cobertura de gramnegativos y, en general, menor cobertura de grampositivos (con excepciones en generaciones avanzadas).",
+  items:[
+    {name:"1ª generación — Cefazolina, Cefalexina, Cefadroxilo", spectrum:"Buena cobertura grampositiva: MSSA, estreptococos; gramnegativa limitada (E. coli, Klebsiella, Proteus mirabilis).", uses:"Profilaxis quirúrgica (cefazolina IV) y profilaxis en cesárea (2–3 g). Fractura expuesta Gustilo-Anderson grado I. Alternativa segura en alergia no severa a penicilina. Infecciones de piel y tejidos blandos. Artritis séptica por MSSA. ITU no complicada."},
+    {name:"2ª generación — Cefuroxima, Cefaclor, Cefoxitina", spectrum:"H. influenzae, M. catarrhalis, algunos anaerobios (cefoxitina); cobertura grampositiva algo menor que 1ª gen.", uses:"Patologías respiratorias (sinusitis, otitis, NAC). Cefoxitina cubre anaerobios: infecciones de abdomen y pelvis, profilaxis en cirugía colorrectal."},
+    {name:"3ª generación — Ceftriaxona, Cefotaxima, Ceftazidima, Cefixima", spectrum:"Amplia cobertura gramnegativa (E. coli, Klebsiella, Neisseria, H. influenzae); ceftazidima cubre además Pseudomonas aeruginosa.", uses:"Meningitis bacteriana (+ vancomicina). Gonorrea (dosis única IM). NAC hospitalizada (+ azitromicina), pielonefritis, sepsis comunitaria. Profilaxis en varices esofágicas sangrantes. Fiebre tifoidea grave/hospitalizada. Epididimitis infecciosa (+ doxiciclina). EIP gonocócica. Apendicitis (+ metronidazol). Profilaxis de contactos de meningococo. Enfermedad de Lyme."},
+    {name:"4ª generación — Cefepime", spectrum:"Amplio espectro gramnegativo incluida Pseudomonas, y buena cobertura grampositiva; estable frente a betalactamasas AmpC.", uses:"Neumonía con sospecha de Pseudomonas (alternativa a piperacilina/tazobactam). Neumonía nosocomial, neutropenia febril, infecciones graves de origen desconocido en hospitalizados."},
+    {name:"5ª generación — Ceftarolina, Ceftobiprol", spectrum:"Afinidad por PBP2a: cubre SARM, estreptococos, gramnegativos comunes (no Pseudomonas en ceftarolina).", uses:"NAC, infecciones complicadas de piel y tejidos blandos, incluidas las causadas por SARM."},
+    {name:"Ceftolozano-tazobactam / Ceftazidima-avibactam", spectrum:"Pseudomonas aeruginosa multirresistente, enterobacterias productoras de BLEE o carbapenemasas.", uses:"Infecciones intraabdominales y urinarias complicadas, neumonía nosocomial por gérmenes multirresistentes, cuando fallan otras opciones."}
+  ]
+},
+{
+  group:"Carbapenémicos y monobactámicos",
+  mechanism:"Betalactámicos de espectro ultra-amplio, muy estables frente a betalactamasas; se reservan para infecciones graves o multirresistentes. El monobactámico (aztreonam) solo actúa sobre gramnegativos.",
+  items:[
+    {name:"Imipenem-cilastatina, Meropenem, Doripenem", spectrum:"Espectro ultra-amplio: gramnegativos (incl. Pseudomonas y Acinetobacter), grampositivos (no SARM ni enterococo resistente), anaerobios.", uses:"Infecciones graves intrahospitalarias, sepsis de origen desconocido, infecciones por productores de BLEE, infecciones polimicrobianas graves."},
+    {name:"Ertapenem", spectrum:"Enterobacterias (incl. BLEE), anaerobios, grampositivos sensibles — sin cobertura confiable de Pseudomonas ni Acinetobacter.", uses:"Infecciones intraabdominales y pélvicas complicadas, pie diabético, terapia ambulatoria de infecciones graves (dosis diaria única)."},
+    {name:"Aztreonam", spectrum:"Solo gramnegativos aerobios, incluida Pseudomonas aeruginosa; sin actividad frente a grampositivos ni anaerobios.", uses:"Infecciones por gramnegativos en pacientes alérgicos a penicilinas (sin reactividad cruzada relevante). Infecciones urinarias y respiratorias por gramnegativos."}
+  ]
+},
+{
+  group:"Glucopéptidos y lipopéptidos",
+  mechanism:"Actúan sobre la pared o membrana celular por mecanismos distintos a los betalactámicos, útiles frente a grampositivos resistentes.",
+  items:[
+    {name:"Vancomicina", spectrum:"Grampositivos incl. SARM, S. epidermidis, Enterococcus (no resistente), Clostridioides difficile (vía oral). Se une al extremo D-Ala-D-Ala del peptidoglicano.", uses:"Artritis séptica por SARM. Meningitis bacteriana (+ ceftriaxona) en todas las edades. Infección por Clostridium difficile (primera elección, vía oral) — factores de riesgo para C. difficile: uso reciente de clindamicina, cefalosporinas, fluoroquinolonas o penicilinas de amplio espectro. Bacteriemia, endocarditis y neumonía graves por SARM. Profilaxis quirúrgica en alérgicos a betalactámicos. Cefazolina sí puede darse en alergia a penicilina (reacción no severa)."},
+    {name:"Teicoplanina", spectrum:"Similar a vancomicina, vida media más larga.", uses:"Alternativa a vancomicina en infecciones graves por grampositivos, con dosificación menos frecuente."},
+    {name:"Daptomicina", spectrum:"Grampositivos multirresistentes: SARM, algunos enterococos resistentes a vancomicina. Se inserta en la membrana celular y la despolariza.", uses:"Bacteriemia y endocarditis derecha por SARM. Infecciones complicadas de piel (NO usar en neumonía: el surfactante pulmonar la inactiva)."},
+    {name:"Telavancina, Dalbavancina, Oritavancina", spectrum:"Grampositivos incl. SARM; combinan inhibición de pared con alteración de membrana, vida media muy prolongada.", uses:"Infecciones de piel y tejidos blandos, con dosis única o muy espaciada (dalbavancina)."}
+  ]
+},
+{
+  group:"Aminoglucósidos",
+  mechanism:"Se unen de forma irreversible a la subunidad ribosomal 30S, provocando lectura errónea del ARNm. Bactericidas; requieren oxígeno para entrar a la célula (poco activos frente a anaerobios). Como grupo, se usan en la fractura expuesta grado III (junto a una cefalosporina) por su cobertura de amplio espectro complementaria. Toxicidad de clase: necrosis tubular aguda (NTA).",
+  items:[
+    {name:"Gentamicina", spectrum:"Gramnegativos aerobios (E. coli, Klebsiella, Pseudomonas en combinación); sinergismo con betalactámicos frente a Enterococcus y estreptococos.", uses:"Metritis puerperal (+ clindamicina). Endometritis posparto tras cesárea (+ ampicilina/sulbactam + clindamicina). Sepsis por gramnegativos, endocarditis en combinación, pielonefritis complicada. Uso tópico ocular/piel."},
+    {name:"Amikacina", spectrum:"Gramnegativos multirresistentes, incluida Pseudomonas, y micobacterias atípicas.", uses:"Infecciones nosocomiales graves por gramnegativos multirresistentes. Tuberculosis multirresistente (esquemas combinados)."},
+    {name:"Tobramicina", spectrum:"Gramnegativos, buena actividad frente a Pseudomonas aeruginosa.", uses:"Infecciones respiratorias en fibrosis quística (forma inhalada). Infecciones oculares. Sepsis por Pseudomonas."},
+    {name:"Estreptomicina", spectrum:"Mycobacterium tuberculosis, Yersinia pestis, Brucella, Francisella tularensis.", uses:"Tuberculosis (segunda línea). Peste, brucelosis (+ doxiciclina) y tularemia, en combinación."},
+    {name:"Neomicina", spectrum:"Gramnegativos entéricos; demasiado tóxica para uso sistémico.", uses:"Uso tópico (piel, mucosas). Oral no absorbible: preparación intestinal prequirúrgica, encefalopatía hepática."}
+  ]
+},
+{
+  group:"Macrólidos y lincosamidas",
+  mechanism:"Se unen a la subunidad ribosomal 50S bloqueando la translocación de la cadena peptídica. Bacteriostáticos (bactericidas a concentraciones altas). Nota: contraindicados en NAC si la resistencia local a macrólidos supera el 25%.",
+  items:[
+    {name:"Eritromicina", spectrum:"Grampositivos (estreptococos), Mycoplasma pneumoniae, Legionella, Chlamydia, Bordetella pertussis.", uses:"Neumonía atípica, tos ferina, infecciones por Chlamydia. Alternativa en alérgicos a penicilina para faringitis estreptocócica leve. Impétigo. Alternativa en RPM con infección."},
+    {name:"Claritromicina", spectrum:"Similar a eritromicina, más Helicobacter pylori y micobacterias atípicas (complejo Mycobacterium avium).", uses:"Neumonía atípica, sinusitis. Erradicación de H. pylori (esquema estándar con amoxicilina e IBP; o con metronidazol en alergia a penicilina). NAC pediátrica. Infecciones por micobacterias no tuberculosas."},
+    {name:"Azitromicina", spectrum:"Similar a claritromicina; también cubre Neisseria gonorrhoeae y Chlamydia trachomatis. Vida media muy prolongada.", uses:"Cervicitis/uretritis por Chlamydia (dosis única). NAC ambulatoria y hospitalizada (+ ceftriaxona). Fiebre tifoidea no complicada. Alternativa en EIP. Exacerbación de EPOC. Profilaxis y tratamiento de micobacterias atípicas en VIH."},
+    {name:"Clindamicina (lincosamida)", spectrum:"Grampositivos (incl. SARM comunitario), anaerobios (Bacteroides, Peptostreptococcus). Mismo sitio ribosomal (50S) que los macrólidos.", uses:"Metritis puerperal (+ gentamicina). Endometritis posparto tras cesárea. Balanitis bacteriana. Malaria por P. falciparum en el primer trimestre (+ quinina). Infecciones dentales, abscesos por anaerobios, infecciones de piel y tejidos blandos. Parte del tratamiento de fascitis necrosante (inhibe la producción de toxinas). Muy asociada al desarrollo de infección por Clostridium difficile."}
+  ]
+},
+{
+  group:"Tetraciclinas y glicilciclinas",
+  mechanism:"Bloquean la unión del ARN de transferencia a la subunidad ribosomal 30S, impidiendo la incorporación de nuevos aminoácidos. Bacteriostáticos.",
+  items:[
+    {name:"Tetraciclina", spectrum:"Amplio espectro: grampositivos, gramnegativos, Rickettsia, Chlamydia, Mycoplasma; H. pylori en esquema combinado.", uses:"Acné moderado-grave. Infecciones por Rickettsia. Erradicación de H. pylori en recurrencia (+ subcitrato de bismuto + metronidazol)."},
+    {name:"Doxiciclina", spectrum:"Similar a tetraciclina, además Borrelia burgdorferi, Anaplasma, Ehrlichia, Vibrio cholerae, Brucella spp., algunas cepas de SARM comunitario.", uses:"Epididimitis infecciosa (+ ceftriaxona). EIP por Chlamydia. Enfermedad de Lyme. Cólera (dosis única en adultos). Brucelosis (+ estreptomicina). Alternativa en NAC ambulatoria (atípicos). Acné, profilaxis de malaria, infecciones de transmisión sexual por clamidia."},
+    {name:"Minociclina", spectrum:"Similar a doxiciclina, con actividad adicional frente a algunas cepas de Acinetobacter.", uses:"Acné, infecciones cutáneas, alternativa en infecciones por Acinetobacter multirresistente."},
+    {name:"Tigeciclina (glicilciclina)", spectrum:"Amplio espectro incl. SARM, enterococo resistente a vancomicina, anaerobios y muchos gramnegativos (no Pseudomonas).", uses:"Infecciones complicadas de piel e intraabdominales cuando otras opciones no son adecuadas — generalmente último recurso."}
+  ]
+},
+{
+  group:"Fluoroquinolonas",
+  mechanism:"Inhiben la ADN girasa (topoisomerasa II) y la topoisomerasa IV bacterianas, esenciales para la replicación del ADN. Bactericidas.",
+  items:[
+    {name:"Ciprofloxacino", spectrum:"Fuerte actividad gramnegativa, incluida Pseudomonas aeruginosa y Neisseria gonorrhoeae; cobertura grampositiva más limitada.", uses:"Otitis externa aguda (tópico, + hidrocortisona). Pielonefritis. Gonorrea (dosis única VO). Diverticulitis no complicada (+ metronidazol). Profilaxis de contactos de meningococo. ITU complicada, prostatitis, infecciones gastrointestinales bacterianas, ántrax, osteomielitis por gramnegativos. Contraindicado en el embarazo."},
+    {name:"Levofloxacino / Moxifloxacino («respiratorias»)", spectrum:"Gramnegativos, S. pneumoniae, atípicos (Mycoplasma, Chlamydia, Legionella); moxifloxacino con mayor actividad frente a anaerobios.", uses:"Alternativa en NAC ambulatoria con comorbilidades. Levofloxacino en erradicación de H. pylori en cepas resistentes (+ amoxicilina + tinidazol). Sinusitis bacteriana aguda, ITU complicada. Moxifloxacino: infecciones intraabdominales leves, TB multirresistente (2ª línea)."},
+    {name:"Norfloxacino", spectrum:"Gramnegativos urinarios (E. coli, Klebsiella, Proteus). Concentración principalmente urinaria.", uses:"Infecciones urinarias no complicadas."}
+  ]
+},
+{
+  group:"Sulfonamidas",
+  mechanism:"Bloquean pasos sucesivos de la síntesis del ácido fólico bacteriano. El efecto combinado sulfametoxazol + trimetoprim es sinérgico y bactericida.",
+  items:[
+    {name:"Trimetoprim/Sulfametoxazol (cotrimoxazol)", spectrum:"Amplio espectro: E. coli, Listeria, Nocardia, Stenotrophomonas maltophilia, Pneumocystis jirovecii.", uses:"NAC pediátrica (8–10 mg/kg/día c/12 h). ITU no complicada. Neumonía por Pneumocystis (tratamiento y profilaxis en inmunosuprimidos). Infecciones por SARM comunitario en piel y tejidos blandos. Nocardiosis."}
+  ]
+},
+{
+  group:"Nitroimidazoles",
+  mechanism:"Se activan dentro de la célula bacteriana o del parásito anaerobio, generando radicales libres que dañan el ADN. Solo actúan en ambientes de bajo potencial redox (anaerobiosis). Interacción: con alcohol producen efecto tipo disulfiram (rubor, cefalea, náuseas, taquicardia, hipotensión).",
+  items:[
+    {name:"Metronidazol", spectrum:"Anaerobios (Bacteroides fragilis, Clostridioides difficile), protozoos (Trichomonas, Giardia, Entamoeba), Clostridium tetani.", uses:"Vaginosis bacteriana. Tricomoniasis. EIP con sospecha de anaerobios. Diverticulitis no complicada (+ ciprofloxacino). Apendicitis (+ ceftriaxona). Aborto séptico. Tétanos. Giardiasis, amebiasis. Colitis por C. difficile (+ vancomicina oral en casos graves). Erradicación de H. pylori (recurrencia y alergia a penicilina)."},
+    {name:"Tinidazol", spectrum:"Similar a metronidazol, vida media más larga.", uses:"Giardiasis, amebiasis, tricomoniasis, vaginosis bacteriana (alternativa con dosis única)."}
+  ]
+},
+{
+  group:"Oxazolidinonas",
+  mechanism:"Inhiben la síntesis proteica bloqueando el complejo de iniciación ribosomal 70S — mecanismo distinto al de otros inhibidores del ribosoma, sin resistencia cruzada con macrólidos ni aminoglucósidos.",
+  items:[
+    {name:"Linezolid", spectrum:"Grampositivos multirresistentes: SARM, enterococo resistente a vancomicina (ERV), neumococo resistente.", uses:"Neumonía por SARM. Infecciones de piel y tejidos blandos complicadas. Infecciones por ERV cuando otras opciones fallan. Alternativa a vancomicina en artritis séptica por SARM."},
+    {name:"Tedizolid", spectrum:"Similar a linezolid, mayor potencia in vitro.", uses:"Infecciones agudas de piel y tejidos blandos por grampositivos, incluido SARM."}
+  ]
+},
+{
+  group:"Polimixinas",
+  mechanism:"Actúan como detergentes catiónicos que se insertan en la membrana externa de bacterias gramnegativas, desestabilizándola hasta causar lisis.",
+  items:[
+    {name:"Colistina (polimixina E)", spectrum:"Gramnegativos multirresistentes: Pseudomonas aeruginosa, Acinetobacter baumannii, Klebsiella pneumoniae resistente a carbapenémicos.", uses:"Infecciones graves por gramnegativos panresistentes — generalmente último recurso, por su toxicidad renal."},
+    {name:"Polimixina B", spectrum:"Similar a colistina.", uses:"Infecciones graves por gramnegativos multirresistentes. También en preparaciones tópicas oftálmicas y óticas combinadas."}
+  ]
+},
+{
+  group:"Rifamicinas",
+  mechanism:"Inhiben la ARN polimerasa dependiente de ADN bacteriana, bloqueando la transcripción.",
+  items:[
+    {name:"Rifampicina", spectrum:"Mycobacterium tuberculosis, Staphylococcus (en combinación), Neisseria meningitidis.", uses:"Tuberculosis — esquema 2HRZE/4HR, siempre combinada para evitar resistencia. Profilaxis de contactos de meningitis meningocócica (alternativas: ciprofloxacino, ceftriaxona IM). Infecciones asociadas a material protésico (+ otro antibiótico). Efectos adversos: hepatitis, orina de color naranja, psicosis, síndrome de Stevens-Johnson."},
+    {name:"Rifabutina", spectrum:"M. tuberculosis, complejo Mycobacterium avium (MAC).", uses:"Tuberculosis en pacientes VIH con antirretrovirales (menor interacción que rifampicina). Profilaxis/tratamiento de infección por MAC."}
+  ]
+},
+{
+  group:"Antituberculosos de primera línea",
+  mechanism:"Fármacos con distintos mecanismos, usados siempre en combinación para evitar la aparición de resistencia de M. tuberculosis. (Rifampicina, ver grupo Rifamicinas).",
+  items:[
+    {name:"Isoniazida (H)", spectrum:"Mycobacterium tuberculosis — inhibe la síntesis del ácido micólico de la pared celular.", uses:"Fase intensiva y de continuación del esquema 2HRZE/4HR (6 meses: 2 meses HRZE + 4 meses HR). Tratamiento preventivo en pacientes VIH con PPD positivo sin TB activa, y en menores de 5 años en contacto con TB bacteriológicamente positiva. Efectos adversos: hepatitis; neuropatía periférica por déficit de B6 (antídoto: piridoxina). Nota: causa anemia sideroblástica."},
+    {name:"Pirazinamida (Z)", spectrum:"Mycobacterium tuberculosis intracelular — se activa en el fagosoma ácido.", uses:"Fase intensiva del esquema antituberculoso (primeros 2 meses). Efectos adversos: hepatotoxicidad, hiperuricemia."},
+    {name:"Etambutol (E)", spectrum:"Mycobacterium tuberculosis y algunas micobacterias atípicas — inhibe la arabinosil transferasa.", uses:"Fase intensiva del esquema antituberculoso; protege frente a la aparición de resistencia a otros fármacos. Efectos adversos: neuritis óptica, pérdida de agudeza visual, ceguera para el rojo-verde."}
+  ]
+},
+{
+  group:"Nitrofuranos y uso urinario",
+  mechanism:"Fármacos activados en el tracto urinario, con espectro dirigido a uropatógenos y escasa concentración sistémica.",
+  items:[
+    {name:"Nitrofurantoína", spectrum:"Gramnegativos y algunos grampositivos uropatógenos.", uses:"Infección de vías urinarias bajas / cistitis no complicada, incluido el embarazo (100 mg c/12 h). No sirve para pielonefritis por su escasa concentración tisular fuera de la vejiga."},
+    {name:"Fosfomicina", spectrum:"E. coli (incl. productoras de BLEE), otros uropatógenos gramnegativos, algunos grampositivos. Inhibe la enzima MurA.", uses:"Infección urinaria no complicada (dosis única oral). Alternativa en cistitis por gérmenes multirresistentes."},
+    {name:"Metenamina", spectrum:"Amplio espectro de uropatógenos — se hidroliza en orina ácida liberando formaldehído.", uses:"Profilaxis de infecciones urinarias recurrentes no complicadas."}
+  ]
+},
+{
+  group:"Otros de uso específico",
+  mechanism:"Fármacos con mecanismos particulares, reservados para indicaciones concretas o de uso tópico.",
+  items:[
+    {name:"Cloranfenicol", spectrum:"Amplio espectro: grampositivos, gramnegativos, anaerobios, Rickettsia. Inhibe la peptidil transferasa (50S).", uses:"Uso muy restringido por toxicidad medular grave (anemia aplásica); se reserva para meningitis o infecciones graves sin otra alternativa, o formulaciones tópicas oftálmicas."},
+    {name:"Ácido fusídico", spectrum:"Principalmente Staphylococcus aureus, incluido SARM en algunas regiones.", uses:"Infecciones cutáneas estafilocócicas, uso tópico y oral (combinado con otro antibiótico para evitar resistencia)."},
+    {name:"Mupirocina", spectrum:"Staphylococcus aureus, Streptococcus pyogenes.", uses:"Impétigo localizado. Balanitis bacteriana."},
+    {name:"Fidaxomicina", spectrum:"Clostridium difficile.", uses:"Alternativa a la vancomicina oral en la infección por Clostridium difficile."}
+  ]
+}
+];
+
+/* ============================================================
+   CASOS CLÍNICOS (extraídos de CACCES.pdf — orientados a examen)
+   ============================================================ */
+const CASOS = [
+{
+  specialty:"Infectología general",
+  cases:[
+    {title:"Meningitis bacteriana — esquema empírico por edad", scenario:"Paciente con fiebre, rigidez de nuca, cefalea; sospecha de meningitis bacteriana.", regimen:"18–50 años: Ceftriaxona + vancomicina.\n>50 años o inmunosuprimidos: Ceftriaxona + vancomicina + ampicilina (cobertura de Listeria).", pearls:"Petequias + meningitis = pensar en meningococo. Profilaxis de contactos: rifampicina, ciprofloxacino o ceftriaxona IM."},
+    {title:"Tuberculosis — esquema y efectos adversos", scenario:"Diagnóstico confirmado (Xpert MTB/RIF, prueba inicial recomendada por el MSP) o PPD positivo con clínica.", regimen:"Esquema 2HRZE/4HR — 6 meses totales: 2 meses de fase intensiva (Isoniazida+Rifampicina+Pirazinamida+Etambutol) + 4 meses de continuación (Isoniazida+Rifampicina).", pearls:"Isoniazida: hepatitis, neuropatía periférica (déficit B6, antídoto piridoxina). Rifampicina: hepatitis, orina naranja, psicosis, Stevens-Johnson. Pirazinamida: hepatotoxicidad, hiperuricemia. Etambutol: neuritis óptica, ceguera rojo-verde. PPD ≥5mm (VIH/inmunosuprimidos/trasplante), ≥10mm (personal de salud/ERC/diabéticos/contactos), ≥15mm (sin factores de riesgo). Tratamiento preventivo con isoniazida en VIH+PPD+ sin TB activa, y en <5 años contacto con TB."},
+    {title:"Infección por Clostridioides difficile", scenario:"Diarrea acuosa (≥3 deposiciones/24h) tras uso reciente de antibióticos, con dolor abdominal, fiebre y leucocitosis.", regimen:"Primera elección: Vancomicina VO. Alternativa: Fidaxomicina VO.", pearls:"Antibióticos más asociados al riesgo: clindamicina, cefalosporinas, fluoroquinolonas y penicilinas de amplio espectro. Diagnóstico rápido: antígeno enzimático; gold estándar (mayor sensibilidad): cultivo."},
+    {title:"Endocarditis infecciosa", scenario:"Fiebre + soplo cardíaco nuevo, con nódulos de Osler, lesiones de Janeway o manchas de Roth.", regimen:"Antibióticos IV prolongados (4–6 semanas). S. aureus sensible: oxacilina/nafcilina. Streptococcus viridans: penicilina G o ceftriaxona.", pearls:"Gérmenes según factor de riesgo — usuario de drogas IV: S. aureus; valvulopatía previa/foco dental: S. viridans; prótesis valvular: S. epidermidis."},
+    {title:"Mnemotecnias rápidas", scenario:"—", regimen:"Ampicilina → Listeria. Vancomicina → SARM (MRSA).", pearls:"Aminoglucósidos → necrosis tubular aguda (NTA). Metronidazol + alcohol → efecto disulfiram (rubor, cefalea, náuseas, taquicardia, hipotensión). CPK elevado distingue fascitis necrotizante de celulitis."}
+  ]
+},
+{
+  specialty:"Neumología",
+  cases:[
+    {title:"Neumonía adquirida en la comunidad (adultos) — escalera CURB-65", scenario:"CURB-65: Confusión, Urea >7mmol/L, FR ≥30/min, PAS<90 o PAD≤60, Edad ≥65. 0–1: ambulatorio. 2: hospitalización. ≥3: hospitalización, valorar UCI.", regimen:"Ambulatorio sin comorbilidades: Amoxicilina VO (alt.: doxiciclina o azitromicina si atípicos).\nAmbulatorio con comorbilidades: Amoxicilina/clavulánico + azitromicina (alt.: levofloxacino o moxifloxacino).\nHospitalizado en sala: Ceftriaxona IV + azitromicina (alt.: ampicilina/sulbactam + macrólido).\nSospecha de Pseudomonas (bronquiectasias, ATB repetidos, hospitalizaciones frecuentes, colonización previa): piperacilina/tazobactam o cefepime.", pearls:"Macrólidos contraindicados si la resistencia local supera el 25%. Control con Rx de tórax si no mejora en 48–72h, o a las 4–6 semanas del diagnóstico."},
+    {title:"Neumonía adquirida en la comunidad — pediatría (dosis por kg)", scenario:"NAC en paciente pediátrico.", regimen:"Amoxicilina 90 mg/kg/día. Claritromicina 7,5 mg/kg/día. Trimetoprim/sulfametoxazol 8–10 mg/kg/día cada 12 horas.", pearls:"—"},
+    {title:"Epiglotitis vs. laringotraqueítis bacteriana", scenario:"Epiglotitis: inicio súbito, posición en trípode, aspecto tóxico — Haemophilus influenzae tipo b (signo del pulgar en Rx).\nLaringotraqueítis bacteriana: inicio progresivo, tos perruna — Staphylococcus aureus (irregularidad subglótica en Rx).", regimen:"Manejo dirigido al germen causal (cobertura empírica según sospecha); ambas requieren manejo urgente de la vía aérea.", pearls:"No confundir con el crup viral clásico (parainfluenza)."}
+  ]
+},
+{
+  specialty:"Otorrinolaringología",
+  cases:[
+    {title:"Otitis externa aguda", scenario:"Dolor intenso, prurito y secreción ótica; signo del trago positivo. Gérmenes: Pseudomonas aeruginosa, Staphylococcus aureus. Riesgo de otitis externa maligna en diabéticos/inmunocomprometidos.", regimen:"Ciprofloxacino tópico + hidrocortisona.", pearls:"—"},
+    {title:"Otitis media aguda", scenario:"Diagnóstico por otoscopia de oído medio.", regimen:"Amoxicilina.", pearls:"Otitis media crónica: otorrea purulenta, otalgia, hipoacusia >3 meses."},
+    {title:"Sinusitis bacteriana aguda", scenario:"Fiebre, congestión nasal, rinorrea purulenta, dolor/presión facial, hiposmia, halitosis. Gérmenes: S. pneumoniae, H. influenzae.", regimen:"Amoxicilina.", pearls:"Diferencial: rinitis (prurito), cuerpo extraño (rinorrea purulenta unilateral)."},
+    {title:"Faringoamigdalitis estreptocócica (Criterios de Centor)", scenario:"Fiebre >38°C (+1), ausencia de tos (+1), adenopatías cervicales dolorosas (+1), exudado amigdalino (+1); ajuste por edad: 3–14 años +1, 15–44 años 0, ≥45 años −1.", regimen:"0–1 puntos: baja probabilidad, no ATB. 2–3: cultivo. ≥4: tratamiento empírico + cultivo (penicilina benzatínica).", pearls:"Complicación: absceso periamigdalino (asimetría faríngea, úvula desplazada)."}
+  ]
+},
+{
+  specialty:"Oftalmología",
+  cases:[
+    {title:"Conjuntivitis bacteriana", scenario:"Hiperemia conjuntival, secreción purulenta, sensación de cuerpo extraño. Gonocócica (Neisseria gonorrhoeae, con úlcera corneal) vs. no gonocócica (S. aureus, S. epidermidis, S. pneumoniae, H. influenzae, sin úlcera).", regimen:"Colirios antibióticos: aminoglucósidos o fluoroquinolonas.", pearls:"Diferencial con queratitis: dolor, fotofobia, visión borrosa."}
+  ]
+},
+{
+  specialty:"Traumatología",
+  cases:[
+    {title:"Fractura expuesta — clasificación de Gustilo-Anderson", scenario:"Grado I: lesión <1 cm. Grado II: 1–10 cm. Grado III: >10 cm (IIIA con tejido para injerto, IIIB sin tejido — requiere colgajo, IIIC con daño vascular/nervioso severo).", regimen:"Grado I: cefalosporina de 1ª generación.\nGrado III: cefalosporina + aminoglucósido.", pearls:"Cefazolina sí puede administrarse en alergia no severa a penicilina."}
+  ]
+},
+{
+  specialty:"Reumatología",
+  cases:[
+    {title:"Artritis séptica", scenario:"Staphylococcus aureus es el germen más común. Infección gonocócica también posible.", regimen:"MSSA: oxacilina, dicloxacilina, cefazolina o cefalexina.\nMRSA (SARM): vancomicina o linezolid.\nGonocócica: ceftriaxona.", pearls:"—"},
+    {title:"Fiebre reumática", scenario:"Evidencia de infección estreptocócica previa: ASTO (antiestreptolisina O) elevada.", regimen:"Tratamiento de base: penicilina. Carditis: prednisona + aspirina. Corea: haloperidol + ácido valproico.", pearls:"—"}
+  ]
+},
+{
+  specialty:"Dermatología",
+  cases:[
+    {title:"Impétigo", scenario:"Costras color miel/amarillo dorado. Ampolloso → S. aureus. Contagioso (no ampolloso) → S. pyogenes.", regimen:"Localizado: mupirocina.\nExtenso: cloxacilina o eritromicina, + lavado con peróxido de benzoilo.", pearls:"—"},
+    {title:"Erisipela", scenario:"Placa eritematosa delimitada, edematosa, dolorosa, con piel de naranja y signo de Godet. Causada por Streptococcus pyogenes.", regimen:"Penicilina, cefalexina o amoxicilina.", pearls:"—"},
+    {title:"Otras notas dermatológicas", scenario:"—", regimen:"—", pearls:"Celulitis en DM2 o enfermedad vascular periférica: producida por Staphylococcus aureus. Minociclina puede inducir LES inducido por fármacos y hepatitis autoinmune."}
+  ]
+},
+{
+  specialty:"Ginecología",
+  cases:[
+    {title:"Infecciones vaginales", scenario:"Vaginosis bacteriana (Gardnerella vaginalis, flujo grisáceo con olor a pescado, criterios de Amsel). Tricomoniasis (Trichomonas vaginalis, flujo amarillo espumoso, cuello en fresa). Candidiasis (Candida albicans — no es antibiótico).", regimen:"Vaginosis bacteriana: metronidazol 500 mg VO c/12h × 7 días.\nTricomoniasis: metronidazol 2 g VO dosis única (alternativa: 500 mg c/12h × 7 días).", pearls:"Candidiasis (antifúngico, no antibiótico): fluconazol 150 mg VO dosis única; recurrente: fluconazol 100–200 mg semanal × 6 meses."},
+    {title:"Cervicitis", scenario:"Diagnóstico: cultivo de endocérvix (Thayer-Martin, solo para gonorrea).", regimen:"Gonorrea: ciprofloxacino 500 mg VO dosis única.\nChlamydia: azitromicina 1 g VO (2 tabletas de 500 mg) dosis única.", pearls:"—"},
+    {title:"Enfermedad inflamatoria pélvica (EIP)", scenario:"Triada: dolor abdominal bajo/pélvico, dolor a la movilización cervical, dolor anexial. Gérmenes: N. gonorrhoeae, C. trachomatis, anaerobios.", regimen:"Ceftriaxona 500 mg IM dosis única (o ciprofloxacino) — cubre gonococo.\nDoxiciclina 100 mg VO c/12h × 14 días (o azitromicina) — cubre Chlamydia.\nMetronidazol 500 mg VO c/12h × 14 días — solo si se sospechan anaerobios.", pearls:"Factores de riesgo: múltiples parejas, sin preservativo, ITS previa, EIP previa, DIU reciente."}
+  ]
+},
+{
+  specialty:"Obstetricia",
+  cases:[
+    {title:"Antibióticos en el embarazo — resumen por indicación", scenario:"Distintas indicaciones obstétricas requieren esquemas específicos.", regimen:"Metritis puerperal: clindamicina 900 mg + gentamicina.\nProfilaxis de cesárea: cefazolina 2–3 g (o ampicilina/sulbactam).\nEndometritis posparto (cesárea): ampicilina/sulbactam + gentamicina + clindamicina.\nIVU en el embarazo: nitrofurantoína 100 mg c/12h.\nCribado de SGB (semanas 35–37): profilaxis intraparto con penicilina.", pearls:"Ciprofloxacino: no usar en el embarazo (contraindicado)."},
+    {title:"Rotura prematura de membranas (RPM) con infección", scenario:"RPM a término ≥37 sem; pretérmino <37 sem; prolongada >18 horas desde la ruptura.", regimen:"Ampicilina 2 g IV, luego 1 g cada 6 horas + eritromicina 250 mg cada 6 horas.", pearls:"<34 semanas sin infección: manejo expectante + corticoides para maduración pulmonar."}
+  ]
+},
+{
+  specialty:"Urología",
+  cases:[
+    {title:"Epididimitis infecciosa", scenario:"Causada por Neisseria gonorrhoeae o Chlamydia trachomatis. Signo de Prehn positivo (alivio del dolor al elevar el testículo) orienta a epididimitis, no a torsión.", regimen:"Ceftriaxona IM dosis única + doxiciclina 100 mg VO c/12h × 10 días.", pearls:"No infecciosa: reposo, elevación escrotal, hielo local, AINEs."},
+    {title:"Urolitiasis por estruvita", scenario:"Cálculos asociados a infección por Proteus.", regimen:"Tratamiento antibiótico dirigido; puede requerir retiro del cálculo.", pearls:"Pielonefritis: ciprofloxacino o ceftriaxona."}
+  ]
+},
+{
+  specialty:"Gastroenterología / Abdomen agudo",
+  cases:[
+    {title:"Gastritis / úlcera por Helicobacter pylori — los 4 esquemas", scenario:"Confirmar remisión con prueba de aliento con urea (mayor sensibilidad/especificidad) o antígeno en heces (≥4 semanas después).", regimen:"Esquema estándar: IBP (omeprazol 20 mg c/12h) + amoxicilina 1 g c/12h + claritromicina 500 mg c/12h.\nRecurrencia: IBP + subcitrato de bismuto + metronidazol + tetraciclina (10–14 días).\nCepas resistentes: amoxicilina + levofloxacino + tinidazol.\nAlergia a penicilina: IBP + claritromicina + metronidazol.", pearls:"El subsalicilato de bismuto provoca heces negras (no confundir con melena)."},
+    {title:"Diverticulitis", scenario:"Tríada: dolor en FII, fiebre, leucocitosis. Diagnóstico: TAC abdominal con contraste (colonoscopia contraindicada en fase aguda).", regimen:"No complicada (paciente estable): ciprofloxacino + metronidazol.\nComplicada (absceso, fístula, perforación, peritonitis): antibióticos IV + manejo quirúrgico/drenaje.", pearls:"—"},
+    {title:"Apendicitis aguda", scenario:"Escala de Alvarado (7–8: alta probabilidad; 9–10: casi certeza).", regimen:"Ceftriaxona + metronidazol, o ampicilina/sulbactam.", pearls:"Tratamiento definitivo: apendicectomía laparoscópica."},
+    {title:"Hemorragia digestiva alta por várices esofágicas", scenario:"Paciente con cirrosis/hipertensión portal y hematemesis masiva.", regimen:"Antibiótico profiláctico: ceftriaxona (junto con reanimación, octreótido y ligadura endoscópica).", pearls:"—"}
+  ]
+}
+];
+
+/* ============================================================
+   QUIZ QUESTION BANK
+   ============================================================ */
+const QUESTIONS = [
+  {q:"Paciente con faringoamigdalitis estreptocócica que requiere profilaxis de fiebre reumática. ¿Cuál es el tratamiento de elección?", a:"Penicilina benzatínica", d:["Azitromicina","Ceftriaxona","Vancomicina"]},
+  {q:"Gestante con rotura prematura de membranas (RPM) e infección. ¿Qué esquema IV se recomienda?", a:"Ampicilina + eritromicina", d:["Ceftriaxona + metronidazol","Vancomicina + gentamicina","Clindamicina sola"]},
+  {q:"Neumonía con sospecha de Pseudomonas por bronquiectasias y hospitalizaciones frecuentes. ¿Primera opción?", a:"Piperacilina/tazobactam", d:["Amoxicilina","Azitromicina","Ceftriaxona"]},
+  {q:"Meningitis bacteriana en un paciente mayor de 50 años o inmunosuprimido. ¿Qué antibiótico se añade para cubrir Listeria?", a:"Ampicilina", d:["Vancomicina","Cefepime","Doxiciclina"]},
+  {q:"Profilaxis antibiótica de rutina en cesárea. ¿Cuál es de elección?", a:"Cefazolina", d:["Vancomicina","Ciprofloxacino","Clindamicina"]},
+  {q:"Fractura expuesta Gustilo-Anderson grado I. ¿Qué antibiótico se recomienda?", a:"Cefazolina", d:["Piperacilina/tazobactam","Vancomicina","Metronidazol"]},
+  {q:"Gonorrea no complicada: tratamiento de dosis única intramuscular.", a:"Ceftriaxona", d:["Azitromicina","Doxiciclina","Penicilina G"]},
+  {q:"Profilaxis en contactos de un caso de meningitis meningocócica, dosis única IM.", a:"Ceftriaxona", d:["Vancomicina","Doxiciclina","Metronidazol"]},
+  {q:"Infección por Clostridium difficile: tratamiento de primera elección.", a:"Vancomicina oral", d:["Metronidazol IV","Ceftriaxona","Clindamicina"]},
+  {q:"Erradicación de Helicobacter pylori: esquema estándar.", a:"Amoxicilina + claritromicina + IBP", d:["Doxiciclina + metronidazol","Ceftriaxona + azitromicina","Vancomicina + rifampicina"]},
+  {q:"Artritis séptica por SARM (S. aureus resistente a meticilina): tratamiento de elección.", a:"Vancomicina", d:["Oxacilina","Cefazolina","Amoxicilina"]},
+  {q:"Brucelosis: esquema de tratamiento combinado clásico.", a:"Doxiciclina + estreptomicina", d:["Azitromicina + metronidazol","Ceftriaxona + vancomicina","Penicilina G + gentamicina"]},
+  {q:"Tos ferina (Bordetella pertussis): antibiótico de elección.", a:"Eritromicina", d:["Amoxicilina","Ciprofloxacino","Vancomicina"]},
+  {q:"Vaginosis bacteriana: tratamiento de elección.", a:"Metronidazol", d:["Azitromicina","Fluconazol","Doxiciclina"]},
+  {q:"ITU no complicada en el embarazo (100 mg cada 12 horas).", a:"Nitrofurantoína", d:["Ciprofloxacino","Doxiciclina","Trimetoprim/sulfametoxazol"]},
+  {q:"Antituberculoso que se activa en el fagosoma ácido y es clave en la fase intensiva del tratamiento.", a:"Pirazinamida", d:["Isoniazida","Etambutol","Rifampicina"]},
+  {q:"Neuropatía periférica por déficit de vitamina B6: efecto adverso característico de…", a:"Isoniazida", d:["Rifampicina","Etambutol","Pirazinamida"]},
+  {q:"Endocarditis derecha por SARM. ¿Qué antibiótico NO debe usarse en neumonía porque el surfactante pulmonar lo inactiva?", a:"Daptomicina", d:["Vancomicina","Linezolid","Ceftarolina"]},
+  {q:"ITU por E. coli multirresistente: alternativa en dosis única oral.", a:"Fosfomicina", d:["Nitrofurantoína","Ciprofloxacino","Ceftriaxona"]},
+  {q:"Enfermedad de Lyme: antibiótico de elección.", a:"Doxiciclina", d:["Azitromicina","Penicilina G","Ceftazidima"]},
+  {q:"Neumonía por Pneumocystis jirovecii en paciente inmunosuprimido: tratamiento y profilaxis.", a:"Trimetoprim/sulfametoxazol", d:["Azitromicina","Vancomicina","Clindamicina"]},
+  {q:"Fascitis necrosante: antibiótico que inhibe la producción de toxinas bacterianas y se añade al esquema.", a:"Clindamicina", d:["Vancomicina","Ceftriaxona","Metronidazol"]},
+  {q:"Infección por Pseudomonas aeruginosa panresistente: tratamiento de último recurso pese a su toxicidad renal.", a:"Colistina", d:["Meropenem","Piperacilina/tazobactam","Ceftazidima"]},
+  {q:"Sífilis: tratamiento de elección.", a:"Penicilina G", d:["Doxiciclina","Ceftriaxona","Azitromicina"]},
+  {q:"Diverticulitis no complicada: esquema oral combinado habitual.", a:"Ciprofloxacino + metronidazol", d:["Amoxicilina + claritromicina","Vancomicina + gentamicina","Doxiciclina + azitromicina"]},
+  {q:"Meningitis bacteriana en un paciente de 30 años, sin inmunosupresión. ¿Esquema empírico inicial?", a:"Ceftriaxona + vancomicina", d:["Ceftriaxona + vancomicina + ampicilina","Meropenem solo","Penicilina G sola"]},
+  {q:"Endocarditis por Streptococcus viridans (foco dental). ¿Tratamiento de elección?", a:"Penicilina G o ceftriaxona", d:["Vancomicina","Piperacilina/tazobactam","Doxiciclina"]},
+  {q:"Fractura expuesta Gustilo-Anderson grado III. ¿Esquema antibiótico?", a:"Cefalosporina + aminoglucósido", d:["Solo cefalosporina de 1ª generación","Vancomicina sola","Metronidazol + ciprofloxacino"]},
+  {q:"Otitis externa aguda con dolor intenso y secreción ótica. ¿Tratamiento tópico de elección?", a:"Ciprofloxacino + hidrocortisona", d:["Amoxicilina oral","Vancomicina tópica","Doxiciclina oral"]},
+  {q:"Cervicitis por Chlamydia trachomatis confirmada por cultivo de endocérvix. ¿Tratamiento?", a:"Azitromicina 1 g VO dosis única", d:["Ciprofloxacino 500 mg dosis única","Doxiciclina 100 mg dosis única","Penicilina benzatínica"]},
+  {q:"Epididimitis infecciosa en adulto joven sexualmente activo. ¿Esquema de elección?", a:"Ceftriaxona IM dosis única + doxiciclina 10 días", d:["Ciprofloxacino solo","Metronidazol + azitromicina","Vancomicina IV"]},
+  {q:"Erradicación de H. pylori en un paciente con alergia documentada a penicilina.", a:"IBP + claritromicina + metronidazol", d:["Amoxicilina + claritromicina + IBP","Amoxicilina + levofloxacino + tinidazol","IBP + bismuto + tetraciclina"]},
+  {q:"NAC ambulatoria en paciente con comorbilidades. ¿Esquema inicial?", a:"Amoxicilina/clavulánico + azitromicina", d:["Amoxicilina sola","Ceftriaxona IV + azitromicina","Piperacilina/tazobactam"]},
+  {q:"Factor de riesgo antibiótico más asociado al desarrollo de infección por Clostridioides difficile.", a:"Clindamicina", d:["Doxiciclina","Nitrofurantoína","Trimetoprim/sulfametoxazol"]},
+  {q:"Profilaxis antibiótica de rutina en cesárea, según el esquema obstétrico.", a:"Cefazolina 2–3 g", d:["Ciprofloxacino 500 mg","Vancomicina 1 g","Azitromicina 500 mg"]}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let state = {
+  mode:"ref",
+  activeGroup:0,
+  search:"",
+  flashIndex:0,
+  flashFlipped:false,
+  flashDeck:[],
+  quizIndex:0,
+  quizScore:0,
+  quizAnswered:false,
+  quizOrder:[]
+};
+
+function shuffledIndices(n){
+  const arr=[...Array(n).keys()];
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function buildFlashDeck(){
+  let flat=[];
+  DATA.forEach(g=>g.items.forEach(it=>flat.push({...it, group:g.group})));
+  state.flashDeck = shuffledIndices(flat.length).map(i=>flat[i]);
+  state.flashIndex = 0;
+  state.flashFlipped = false;
+}
+
+function buildQuizOrder(){
+  state.quizOrder = shuffledIndices(QUESTIONS.length);
+  state.quizIndex = 0;
+  state.quizScore = 0;
+  state.quizAnswered = false;
+}
+
+/* ============================================================
+   RENDER: SIDEBAR
+   ============================================================ */
+function renderGroupNav(){
+  const nav=document.getElementById('groupNav');
+  const sel=document.getElementById('groupSelect');
+  nav.innerHTML='';
+  sel.innerHTML='';
+  DATA.forEach((g,i)=>{
+    const btn=document.createElement('button');
+    btn.className='group-btn'+(i===state.activeGroup && state.mode==='ref' ? ' active':'');
+    btn.innerHTML=`<span>${g.group}</span><span class="count">${g.items.length}</span>`;
+    btn.onclick=()=>{ state.activeGroup=i; state.mode='ref'; state.search=''; document.getElementById('searchInput').value=''; render(); };
+    nav.appendChild(btn);
+
+    const opt=document.createElement('option');
+    opt.value=i; opt.textContent=g.group;
+    if(i===state.activeGroup) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  sel.onchange=(e)=>{ state.activeGroup=parseInt(e.target.value); state.mode='ref'; render(); };
+}
+
+/* ============================================================
+   RENDER: REFERENCE VIEW
+   ============================================================ */
+function renderReference(){
+  const view=document.getElementById('view');
+  const q=state.search.trim().toLowerCase();
+
+  if(q){
+    let results=[];
+    DATA.forEach(g=>g.items.forEach(it=>{
+      const hay=(it.name+' '+it.spectrum+' '+it.uses).toLowerCase();
+      if(hay.includes(q)) results.push({...it, group:g.group});
+    }));
+    if(results.length===0){
+      view.innerHTML = `<p class="no-results">No se encontraron antibióticos para “${state.search}”.</p>`;
+      return;
+    }
+    view.innerHTML = `<div class="group-heading"><h2>Resultados para “${state.search}”</h2></div>`;
+    results.forEach(it=>view.appendChild(drugCard(it, it.group)));
+    return;
+  }
+
+  const g=DATA[state.activeGroup];
+  view.innerHTML = `<div class="group-heading"><h2>${g.group}</h2></div>
+    <p class="group-mechanism">${g.mechanism}</p>`;
+  g.items.forEach(it=>view.appendChild(drugCard(it)));
+}
+
+function drugCard(it, groupLabel){
+  const card=document.createElement('div');
+  card.className='drug-card';
+  card.innerHTML=`
+    <h3>${it.name}${groupLabel?` <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9C96AE;">· ${groupLabel}</span>`:''}</h3>
+    <div class="drug-row spec"><span class="label">ESPECTRO</span><span class="val">${it.spectrum}</span></div>
+    <div class="drug-row uses"><span class="label">USOS</span><span class="val">${it.uses}</span></div>
+  `;
+  return card;
+}
+
+/* ============================================================
+   RENDER: CASOS CLÍNICOS
+   ============================================================ */
+function casoCard(c){
+  const card=document.createElement('div');
+  card.className='caso-card';
+  let rows='';
+  if(c.scenario && c.scenario!=='—') rows+=`<div class="caso-row scenario"><span class="label">CASO</span><span class="val">${c.scenario}</span></div>`;
+  if(c.regimen && c.regimen!=='—') rows+=`<div class="caso-row regimen"><span class="label">ESQUEMA</span><span class="val">${c.regimen}</span></div>`;
+  if(c.pearls && c.pearls!=='—') rows+=`<div class="caso-row pearls"><span class="label">CLAVES</span><span class="val">${c.pearls}</span></div>`;
+  card.innerHTML=`<h4>${c.title}</h4>${rows}`;
+  return card;
+}
+
+function renderCasos(){
+  const view=document.getElementById('view');
+  const q=state.search.trim().toLowerCase();
+  view.innerHTML='';
+
+  if(q){
+    let results=[];
+    CASOS.forEach(s=>s.cases.forEach(c=>{
+      const hay=(c.title+' '+c.scenario+' '+c.regimen+' '+c.pearls).toLowerCase();
+      if(hay.includes(q)) results.push({...c, specialty:s.specialty});
+    }));
+    if(results.length===0){
+      view.innerHTML=`<p class="no-results">No se encontraron casos para “${state.search}”.</p>`;
+      return;
+    }
+    view.innerHTML=`<div class="group-heading"><h2>Resultados para “${state.search}”</h2></div>`;
+    let lastSpec='';
+    results.forEach(c=>{
+      if(c.specialty!==lastSpec){
+        const h=document.createElement('div');
+        h.className='specialty-heading';
+        h.textContent=c.specialty;
+        view.appendChild(h);
+        lastSpec=c.specialty;
+      }
+      view.appendChild(casoCard(c));
+    });
+    return;
+  }
+
+  CASOS.forEach(s=>{
+    const h=document.createElement('div');
+    h.className='specialty-heading';
+    h.textContent=s.specialty;
+    view.appendChild(h);
+    s.cases.forEach(c=>view.appendChild(casoCard(c)));
+  });
+}
+
+/* ============================================================
+   RENDER: FLASHCARDS
+   ============================================================ */
+function renderFlash(){
+  const view=document.getElementById('view');
+  if(state.flashDeck.length===0) buildFlashDeck();
+  const card=state.flashDeck[state.flashIndex];
+
+  view.innerHTML=`
+    <div class="flash-wrap">
+      <div class="flash-progress">FICHA ${state.flashIndex+1} / ${state.flashDeck.length} · ${card.group}</div>
+      <div class="flashcard ${state.flashFlipped?'back':''}" id="flashcard"></div>
+      <div class="flash-controls">
+        <button id="flashPrev">← Anterior</button>
+        <button id="flashFlip" class="primary">${state.flashFlipped?'Ver pregunta':'Ver respuesta'}</button>
+        <button id="flashNext">Siguiente →</button>
+        <button id="flashShuffle">Barajar mazo</button>
+      </div>
+    </div>
+  `;
+
+  const fc=document.getElementById('flashcard');
+  if(!state.flashFlipped){
+    fc.innerHTML=`<span class="side-tag">CASO / ESPECTRO</span><div class="q">${card.uses.split('. ')[0]}.</div><div class="hint">Toca la ficha para ver la respuesta</div>`;
+  }else{
+    fc.innerHTML=`<span class="side-tag">ANTIBIÓTICO</span><div class="ans-name">${card.name}</div><div class="ans-extra"><strong>Espectro:</strong> ${card.spectrum}<br><br><strong>Usos:</strong> ${card.uses}</div>`;
+  }
+  fc.onclick=()=>{ state.flashFlipped=!state.flashFlipped; renderFlash(); };
+
+  document.getElementById('flashFlip').onclick=()=>{ state.flashFlipped=!state.flashFlipped; renderFlash(); };
+  document.getElementById('flashNext').onclick=()=>{
+    state.flashIndex=(state.flashIndex+1)%state.flashDeck.length;
+    state.flashFlipped=false; renderFlash();
+  };
+  document.getElementById('flashPrev').onclick=()=>{
+    state.flashIndex=(state.flashIndex-1+state.flashDeck.length)%state.flashDeck.length;
+    state.flashFlipped=false; renderFlash();
+  };
+  document.getElementById('flashShuffle').onclick=()=>{ buildFlashDeck(); renderFlash(); };
+}
+
+/* ============================================================
+   RENDER: QUIZ
+   ============================================================ */
+function renderQuiz(){
+  const view=document.getElementById('view');
+  if(state.quizOrder.length===0) buildQuizOrder();
+
+  if(state.quizIndex >= state.quizOrder.length){
+    const pct=Math.round((state.quizScore/state.quizOrder.length)*100);
+    view.innerHTML=`
+      <div class="quiz-wrap quiz-done">
+        <div class="big">${state.quizScore}/${state.quizOrder.length}</div>
+        <p>${pct}% de aciertos. ${pct>=80?'Excelente dominio del tema.':pct>=60?'Vas bien — repasa los grupos con más fallos.':'Conviene repasar la sección de Referencia antes de reintentar.'}</p>
+        <button class="quiz-next" id="quizRestart">Reintentar quiz</button>
+      </div>`;
+    document.getElementById('quizRestart').onclick=()=>{ buildQuizOrder(); renderQuiz(); };
+    return;
+  }
+
+  const qData = QUESTIONS[state.quizOrder[state.quizIndex]];
+  if(!qData._opts || !state.quizAnswered){
+    // build options fresh each time we land on an unanswered question
+  }
+  const options = qData._currentOpts || (qData._currentOpts = shuffledIndices(4).map(i=>[qData.a,...qData.d][i]));
+
+  view.innerHTML=`
+    <div class="quiz-wrap">
+      <div class="quiz-score">PREGUNTA ${state.quizIndex+1} / ${state.quizOrder.length} · ACIERTOS: ${state.quizScore}</div>
+      <div class="quiz-q">${qData.q}</div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div id="quizNextWrap"></div>
+    </div>
+  `;
+
+  const optWrap=document.getElementById('quizOptions');
+  options.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='quiz-opt';
+    b.textContent=opt;
+    if(state.quizAnswered){
+      b.disabled=true;
+      if(opt===qData.a) b.classList.add('correct');
+      else if(opt===state.lastPicked) b.classList.add('incorrect');
+    }
+    b.onclick=()=>{
+      if(state.quizAnswered) return;
+      state.quizAnswered=true;
+      state.lastPicked=opt;
+      if(opt===qData.a) state.quizScore++;
+      renderQuiz();
+    };
+    optWrap.appendChild(b);
+  });
+
+  if(state.quizAnswered){
+    const nextWrap=document.getElementById('quizNextWrap');
+    const nb=document.createElement('button');
+    nb.className='quiz-next';
+    nb.textContent = (state.quizIndex+1<state.quizOrder.length) ? 'Siguiente pregunta →' : 'Ver resultado';
+    nb.onclick=()=>{
+      qData._currentOpts=null;
+      state.quizIndex++;
+      state.quizAnswered=false;
+      renderQuiz();
+    };
+    nextWrap.appendChild(nb);
+  }
+}
+
+/* ============================================================
+   MAIN RENDER
+   ============================================================ */
+function render(){
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.mode===state.mode);
+  });
+  const searchable = (state.mode==='ref' || state.mode==='casos');
+  document.getElementById('searchWrap').style.display = searchable ? 'block' : 'none';
+  document.getElementById('searchInput').placeholder = state.mode==='casos'
+    ? 'Buscar por especialidad, caso o esquema…'
+    : 'Buscar antibiótico, germen o caso…';
+  document.getElementById('mobileGroups').style.display = (state.mode==='ref' && window.innerWidth<=860) ? 'block' : 'none';
+
+  renderGroupNav();
+
+  if(state.mode==='ref') renderReference();
+  else if(state.mode==='casos') renderCasos();
+  else if(state.mode==='flash') renderFlash();
+  else if(state.mode==='quiz') renderQuiz();
+}
+
+document.getElementById('modeSwitch').addEventListener('click', (e)=>{
+  const btn=e.target.closest('.mode-btn');
+  if(!btn) return;
+  state.mode=btn.dataset.mode;
+  state.search='';
+  document.getElementById('searchInput').value='';
+  if(state.mode==='flash' && state.flashDeck.length===0) buildFlashDeck();
+  if(state.mode==='quiz' && state.quizOrder.length===0) buildQuizOrder();
+  render();
+});
+
+document.getElementById('searchInput').addEventListener('input',(e)=>{
+  state.search=e.target.value;
+  if(state.mode==='casos') renderCasos();
+  else renderReference();
+});
+
+render();
+</script>
+</body>
+</html>
