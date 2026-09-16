@@ -135,7 +135,50 @@
     justify-content:space-between;
     gap:16px;
     flex-wrap:wrap;
-    margin-bottom:26px;
+    margin-bottom:14px;
+  }
+  .topbar:last-of-type{margin-bottom:26px;}
+  .section-switch{
+    display:flex;
+    gap:6px;
+    background:var(--violet-100);
+    padding:4px;
+    border-radius:10px;
+  }
+  .section-btn{
+    all:unset;
+    cursor:pointer;
+    padding:7px 14px;
+    border-radius:7px;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--violet-900);
+  }
+  .section-btn.active{background:var(--violet-900);color:#fff;}
+
+  .topic-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .topic-card h3{
+    font-size:16.5px;
+    margin:0 0 10px;
+    color:var(--ink);
+  }
+  .topic-card .topic-body{
+    font-size:13.5px;
+    line-height:1.65;
+    color:var(--ink);
+    white-space:pre-line;
+  }
+  .topic-card .topic-specialty-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:#9C96AE;
+    font-weight:400;
   }
   .modes{
     display:flex;
@@ -429,10 +472,10 @@
 
   <aside class="sidebar">
     <div class="brand-block">
-      <p class="kicker">GUÍA DE ESTUDIO · FARMACOLOGÍA</p>
-      <h1>Atlas de<br>Antibióticos</h1>
-      <p>Mecanismo, espectro y uso clínico, organizados por grupo farmacológico.</p>
-      <div class="stain-legend">
+      <p class="kicker">GUÍA DE ESTUDIO · CACES / RESIDENCIA</p>
+      <h1 id="brandTitle">Atlas de<br>Antibióticos</h1>
+      <p id="brandSubtitle">Mecanismo, espectro y uso clínico, organizados por grupo farmacológico.</p>
+      <div class="stain-legend" id="stainLegend">
         <span><i class="dot pos"></i>Grampositivo</span>
         <span><i class="dot neg"></i>Gramnegativo</span>
       </div>
@@ -442,11 +485,21 @@
 
   <main>
     <div class="topbar">
-      <div class="modes" id="modeSwitch">
+      <div class="section-switch" id="sectionSwitch">
+        <button class="section-btn active" data-section="atb">Antibióticos</button>
+        <button class="section-btn" data-section="esp">Especialidades (CACES completo)</button>
+      </div>
+    </div>
+    <div class="topbar">
+      <div class="modes" id="modeSwitchAtb">
         <button class="mode-btn active" data-mode="ref">Referencia</button>
         <button class="mode-btn" data-mode="casos">Casos clínicos</button>
         <button class="mode-btn" data-mode="flash">Fichas</button>
         <button class="mode-btn" data-mode="quiz">Quiz</button>
+      </div>
+      <div class="modes" id="modeSwitchEsp" style="display:none;">
+        <button class="mode-btn active" data-mode="espref">Referencia</button>
+        <button class="mode-btn" data-mode="espquiz">Quiz general</button>
       </div>
       <div class="search-wrap" id="searchWrap">
         <input type="text" id="searchInput" placeholder="Buscar antibiótico, germen o caso…">
@@ -460,7 +513,7 @@
     <div id="view"></div>
 
     <footer class="note">
-      Material de estudio elaborado a partir de tus propios apuntes y guías (resumen orientado a CACES/residencia y guía farmacológica general). No sustituye guías clínicas locales ni el criterio médico — no incluye dosis.
+      Material de estudio elaborado a partir de tus propios apuntes y guías (CACCES.pdf, resumen de antibióticos orientado a CACES/residencia y guía farmacológica general). No sustituye guías clínicas locales ni el criterio médico — no incluye dosis salvo cuando el propio material de estudio las especifica.
     </footer>
   </main>
 </div>
@@ -715,6 +768,1046 @@ const CASOS = [
 }
 ];
 
+const ESPECIALIDADES = [
+{specialty:"Oftalmología", topics:[
+{title:"Retinopatía hipertensiva y diabética", content:`Retinopatía hipertensiva (clasificación Keith-Wagener-Barker):
+• Grado 1: estrechamiento arteriolar, sin síntomas.
+• Grado 2: brillo arterial aumentado, cruces arteriovenosos patológicos.
+• Grado 3: hemorragias y exudados algodonosos.
+• Grado 4: hipertensión maligna, edema de papila, compromiso sistémico, atrofia óptica.
+
+Retinopatía diabética no proliferativa:
+• Leve: solo microaneurismas.
+• Moderada: microaneurismas + exudados duros + manchas algodonosas.
+• Severa: ≥20 microaneurismas por cuadrante + anormalidad intrarretiniana.
+Proliferativa: neovascularización + hemorragia vítrea o prerretiniana.`},
+{title:"Glaucoma agudo y degeneración macular", content:`Glaucoma agudo: aumento de la presión intraocular + daño del nervio óptico.
+• Síntomas: disminución de agudeza visual, ojo rojo, dolor intenso, halos alrededor de luces, cefalea frontal intensa, vómitos.
+• Diagnóstico: tonometría.
+• Tratamiento agudo: pilocarpina 2%. Crónico: acetazolamida 250 mg c/6h.
+
+Degeneración macular: edad avanzada, distorsión de objetos, mancha borrosa en el centro con pérdida de visión central, necesidad de más luz para leer.`},
+{title:"Cataratas y lesiones del ojo", content:`Catarata: aumentada por radioterapia; produce miopización (catarata nuclear); afecta nitidez y colores.
+
+Erosión corneal recidivante: destrucción del epitelio por semanas o meses; dolor con antecedente de trauma.
+Simblefaron: adherencia anormal entre globo ocular y conjuntiva (causas: quemaduras, traumatismos).
+
+Trastornos de la acomodación:
+• Presbicia (>40 años): visión de lejos normal, de cerca borrosa, mejora al alejar.
+• Hipermetropía: lejos normal, cerca borroso.
+• Miopía: lejos borroso, cerca normal.
+• Astigmatismo: lejos y cerca borrosos.
+
+Pinguécula: protuberancia benigna blanco/amarillenta en la conjuntiva.
+Síndrome de Charles Bonnet: alucinaciones secundarias a daño orgánico visual, con conciencia de que las imágenes no son reales.
+Estrabismo fisiológico: común en recién nacidos, desaparece a los 3-6 meses.`},
+{title:"Conjuntivitis e inflamación de anexos oculares", content:`Conjuntivitis bacteriana: hiperemia conjuntival, secreción purulenta, sensación de cuerpo extraño.
+• Gonocócica (Neisseria gonorrhoeae): con úlcera corneal.
+• No gonocócica (S. aureus, S. epidermidis, S. pneumoniae, H. influenzae): ojo rojo, secreción purulenta o mucopurulenta sin úlcera.
+• Tratamiento: colirios antibióticos — aminoglucósidos o fluoroquinolonas.
+• Diferencial con queratitis: dolor, fotofobia, visión borrosa.
+
+Dacriocistitis: infección del saco lagrimal por obstrucción del conducto (leucocitos aumentados sugieren causa bacteriana).
+Orzuelo: agudo en el borde del párpado, infección de la glándula de Meibomio o Zeiss — causa: Staphylococcus aureus.
+Chalazión: inflamación crónica del párpado por obstrucción de glándulas de Meibomio.`}
+]},
+{specialty:"Traumatología", topics:[
+{title:"Fracturas de fémur y cadera", content:`Fracturas de fémur proximal:
+• Intracapsular: capital (en el cartílago), subcapital (más común en ancianos), transcervical, basicervical.
+• Extracapsular: intertrocantérica, subtrocantérica.
+
+Clasificación de Tile (fractura de cadera):
+• A: inestable. • B: libro abierto. • C: lesión por cizallamiento vertical.
+
+Fractura expuesta — clasificación de Gustilo-Anderson:
+• Grado I: lesión <1 cm → Tx: cefalosporina de 1.ª generación.
+• Grado II: lesión de 1–10 cm.
+• Grado III: lesión >10 cm → Tx: cefalosporina + aminoglucósido.
+  - IIIA: con tejido que puede recubrir (injerto). IIIB: sin tejido para recubrir (colgajo). IIIC: daño nervioso o vascular severo.`},
+{title:"Fracturas de radio distal y lesiones de húmero/hombro", content:`Fractura de Colles: "dorso de tenedor", caída sobre la mano, fragmento distal desplazado hacia dorsal.
+Fractura de Smith: "pala de jardinero", caída sobre el dorso de la mano, fragmento distal desplazado hacia delante.
+
+Lesiones del húmero:
+• Bankart: avulsión del labrum glenoideo anteroinferior (frecuente en recidivas de luxación).
+• Hill-Sachs: fractura/impresión de la parte posterior de la cabeza humeral (golpe contra la cavidad glenoidea durante luxación).
+• Lesión de McLaughlin: Hill-Sachs inversa (posterior).
+• Neer: fractura de húmero proximal.
+
+Luxación acromioclavicular (grados 1–6): desde distensión de ligamentos (grado 1) hasta ruptura de fascia delto-trapezial y luxación inferior de clavícula (grados 5–6).
+
+Escoliosis: Test de Adams (inclinación hacia delante) y ángulo de Cobb en Rx.
+• Leve 10–25°: seguimiento. Moderada 25–45°: corsé. Grave >45°: cirugía.
+Signo de la charretera: luxación glenohumeral anterior.`},
+{title:"Lumbociática, lumbocruralgia y lesiones de rodilla", content:`Lumbociática: nervio ciático (L4-S3). Dolor lumbar irradiado a cara posterior de muslo hasta tobillo/pie.
+• Signo de Laségue positivo (dolor al elevar la pierna entre 30-70°), reflejo aquíleo disminuido.
+• Tx: AINEs + relajante muscular (ciclobenzaprina); NO dar reposo (empeora la rigidez).
+
+Lumbocruralgia: nervio femoral (L2-L4). Dolor irradiado a cara anterior de muslo hasta rodilla.
+• Signo de Wasserman positivo (boca abajo, se flexiona la rodilla), reflejo rotuliano disminuido.
+Maniobra de Bonnet: descarta que la lesión ciática sea por el músculo piramidal.
+
+Lesiones de rodilla:
+• Inestabilidad más común: anteromedial → ligamento cruzado anterior (LCA).
+• Tríada de O'Donoghue: LCA + ligamento colateral medial + menisco medial.
+• Lesión más común del menisco: en asa de balde/cubo.
+• Maniobras: bostezo (colaterales), cajón (cruzados), Lachman (más específica para LCA), McMurray y Apley (meniscos).`},
+{title:"Esguince de tobillo, osteomielitis y artritis reactiva", content:`Esguince de tobillo:
+• Grado 1: elongación del ligamento, camina con dificultad, sin inestabilidad → Tx: RICE (reposo, hielo, compresión, elevación) primeras 48-72h.
+• Grado 2: ruptura parcial, camina con apoyo pero mucho dolor, presenta inestabilidad → Tx: férula o vendaje.
+• Grado 3: ruptura total, no puede caminar, dolor súbito → cirugía.
+
+Osteomielitis: método de elección RM (mayor sensibilidad/especificidad, detecta cambios a los 3-5 días); Rx detecta cambios en semanas; el cintigrama óseo es poco específico.
+
+Artritis reactiva: semanas después de infección gastrointestinal (Campylobacter, Shigella) o genitourinaria (Chlamydia).
+
+Nota general: en traumatología siempre reducir primero.`}
+]},
+{specialty:"Reumatología", topics:[
+{title:"Artritis reumatoide", content:`Criterios diagnósticos (ACR/EULAR):
+Articulaciones afectadas: 1 grande=0, 2-10 grandes=1, 1-3 pequeñas=2, 4-10 pequeñas=3, >10 (mínimo 1 pequeña)=5.
+Serología (FR y anti-CCP): ambos negativos=0, título bajo=2, título alto=3.
+Reactantes de fase aguda: PCR/VSG normales=0, elevadas=1.
+Duración de síntomas: <6 semanas=0, ≥6 semanas=1.
+≥6 puntos = diagnóstico.
+Tratamiento: modificadores de la enfermedad → metotrexato. Dolor → AINEs + corticoides.
+
+Otra serología específica: Anti-DNA de doble cadena → LES. ANCA → vasculitis.
+Osteoartritis: primera elección → paracetamol.`},
+{title:"Gota y enfermedad de Raynaud", content:`Gota: hiperuricemia (ácido úrico >7 mg/dL en hombres, >6 mg/dL en mujeres).
+Sospechar: monoartritis de inicio súbito, podagra, tofos, signos de inflamación, alcoholismo, ERC.
+Diagnóstico: líquido sinovial con cristales de ácido úrico (principal); leucocitos 2.000-10.000 (Gram para descartar séptica). Rx normal al inicio, en crónica erosiones y tofos. Durante el ataque agudo el ácido úrico puede ser normal o bajo.
+Tratamiento agudo: 1) AINEs (indometacina/naproxeno), 2) colchicina; si alergia a ambos → corticoides (prednisona).
+Tratamiento crónico: alopurinol (nunca en fase aguda).
+
+Enfermedad de Raynaud: fases blanca (vasoconstricción) → cianosis (falta de O2) → roja (reperfusión). Asociada a lupus, esclerodermia, AR. Tratamiento: nifedipina.`},
+{title:"Vasculitis y enfermedades del tejido conectivo", content:`Esclerodermia — síndrome CREST: Calcinosis cutánea, Raynaud, disfunción Esofágica, eSclerodactilia, Telangiectasias.
+
+Granulomatosis de Wegener (poliangeítis con granulomatosis): vasculitis necrotizante de vasos pequeños/medianos.
+Tríada: inflamación granulomatosa de vías aéreas + vasculitis necrotizante generalizada + glomerulonefritis.
+Sospechar: epistaxis, nariz en silla de montar, hemoptisis, nódulos cavitados, hematuria, proteinuria.
+Diagnóstico: clínica + c-ANCA + Rx tórax; definitivo: biopsia. Tratamiento: ciclofosfamida.
+Diferencial: sarcoidosis (más pulmonar, granulomas no caseificantes, sin vasculitis); poliarteritis nodosa (vasos medianos, no granulomatosa).
+
+Síndrome antifosfolípido: hipercoagulabilidad, trombosis arterial/venosa inexplicada, complicaciones obstétricas recurrentes. Anticuerpos: anticoagulante lúpico, anticardiolipina, anti-β2 glicoproteína I.
+
+Arteritis de células gigantes (temporal): vasculitis granulomatosa de arterias medianas/grandes, predilección por rama temporal superficial, >50 años.
+Sospechar: cefalea unilateral temporal de nueva aparición, claudicación mandibular, amaurosis fugaz, diplopía. Diagnóstico: biopsia de arteria temporal. Tratamiento: corticoides (prednisona).
+Diferencial: arteritis de Takayasu (afecta aorta y ramas: pulsos débiles, diferencia de presiones, claudicación de brazos, soplos, oclusión renovascular).
+
+Osteonecrosis avascular: asociada a consumo de corticoides y alcohol; RM detecta rápidamente.`},
+{title:"Espondiloartropatías y otras entidades reumatológicas", content:`Fiebre reumática: evidencia de infección estreptocócica (ASTO). Tratamiento: penicilina. Carditis: prednisona + aspirina. Corea: haloperidol + ácido valproico.
+
+Artritis reactiva: reacción a infección distante (Salmonella, Shigella, ITS/Chlamydia). Tríada: uretritis, conjuntivitis, artritis.
+Artritis psoriásica: lesiones cutáneas con alteraciones ungueales, más frecuente en mujeres.
+Artritis enteropática: relacionada con Crohn o colitis ulcerosa.
+Espondilitis anquilosante: dolor lumbar que mejora con ejercicio y empeora con reposo. Test de Schober. HLA-B27 positivo.
+
+Neurofibromatosis tipo 1: manchas café con leche (>6), alteración del equilibrio, acúfenos, hipoacusia neurosensorial bilateral progresiva, tumores del SNC.
+
+Fibromialgia vs. Polimiositis vs. Polimialgia reumática:
+• Fibromialgia: dolor generalizado + fatiga crónica, 30-40 años, laboratorios normales.
+• Polimiositis: debilidad muscular proximal, enzimas musculares elevadas.
+• Polimialgia reumática: dolor en cintura escapular y pélvica, >50 años, VSG y PCR elevadas, responde a corticoides.
+
+Escorbuto vs. Púrpura trombocitopénica vs. Vasculitis leucocitoclástica:
+• Escorbuto: déficit de vitamina C, petequias/púrpura, encías sangrantes.
+• Vasculitis leucocitoclástica: púrpura palpable, fiebre, dolor articular, reactantes elevados.
+• Púrpura trombocitopénica: plaquetas bajas, petequias/equimosis.
+
+Artritis séptica: S. aureus más común. MSSA: oxacilina/dicloxacilina/cefazolina/cefalexina. MRSA: vancomicina/linezolid. Gonocócica: ceftriaxona.
+
+PPD: ≥5mm positivo en VIH/cercanos a TB/TB antigua; ≥10mm en personal sanitario/menores de 5/drogas; ≥15mm positivo sin criterios.`}
+]},
+{specialty:"Otorrinolaringología", topics:[
+{title:"Vértigo periférico vs. central", content:`Vértigo: sensación ilusoria de movimiento del propio cuerpo (difiere del mareo, que es sensación de movimiento del entorno).
+
+Periférico vs. central:
+• Inicio: súbito vs. gradual.
+• Intensidad: severo vs. leve-moderado.
+• Duración: segundos a días vs. semanas a meses.
+• Nistagmo: horizontal-rotatorio unidireccional (cambia con fijación de mirada) vs. vertical/horizontal (no se inhibe con fijación).
+• Síntomas auditivos: frecuentes vs. ausentes.
+• Síntomas neurológicos: ausentes vs. presentes (disartria, diplopía, déficit).
+• Náuseas/vómitos: intensos vs. leves.
+
+Causas periféricas:
+• VPPB: episodios por pequeños movimientos; Dix-Hallpike diagnóstico; tratamiento maniobra de Epley.
+• Neuronitis vestibular: sin dolor, sin hipoacusia ni tinnitus.
+• Enfermedad de Ménière: crisis de semanas/meses, vértigo + hipoacusia fluctuante + tinnitus + plenitud ótica.
+• Laberintitis: complicación de otitis media.
+
+Causas centrales: ACV del territorio posterior (infarto cerebeloso o síndrome de Wallenberg), migraña vestibular, esclerosis múltiple.`},
+{title:"Epistaxis y faringoamigdalitis", content:`Epistaxis anterior (sangrado en sábana): 1) vasoconstrictor tópico (oximetazolina), 2) cauterización química con nitrato de plata si se identifica el punto, 3) taponamiento nasal anterior.
+Epistaxis posterior o persistente: taponamiento posterior, valoración por ORL, ligadura o embolización en casos refractarios.
+
+Faringoamigdalitis — Criterios de Centor: fiebre >38°C (+1), ausencia de tos (+1), adenopatías cervicales dolorosas (+1), exudado amigdalino (+1). Ajuste por edad: 3-14 años +1, 15-44 años 0, ≥45 años −1.
+Interpretación: 0-1 baja probabilidad; 2-3 cultivo; ≥4 tratamiento empírico + cultivo.
+Complicación: absceso periamigdalino (asimetría faríngea, úvula desplazada al lado contralateral).`},
+{title:"Otitis y sinusitis", content:`Otitis externa aguda: dolor intenso, prurito, secreción ótica; climas cálidos/húmedos; riesgo de otitis externa maligna en diabéticos/inmunocomprometidos.
+• Gérmenes: Pseudomonas aeruginosa, Staphylococcus aureus.
+• Tratamiento: ciprofloxacino tópico + hidrocortisona.
+• Signo del trago positivo sugiere otitis externa.
+
+Otitis media aguda: diagnóstico por otoscopia; tratamiento amoxicilina.
+Otitis media crónica: otorrea purulenta, otalgia, hipoacusia, duración >3 meses.
+
+Sinusitis bacteriana aguda: fiebre, congestión nasal, rinorrea purulenta, dolor/presión facial (maxilar), hiposmia/anosmia, halitosis. Tratamiento: amoxicilina. Gérmenes: S. pneumoniae, H. influenzae.
+Diferencial: rinitis (prurito, antecedente alérgico); cuerpo extraño (rinorrea purulenta unilateral).
+Nota: calcificaciones heterogéneas en senos paranasales sugieren bola fúngica.`}
+]},
+{specialty:"Hematología", topics:[
+{title:"Anemias — clasificación y valores de referencia", content:`Síndrome anémico: leve Hb 10-11 g/dL, moderada Hb 7-10 g/dL, severa Hb <7 g/dL.
+
+Valores de referencia del hemograma: eritrocitos 4.5-5.5 millones/µL, hemoglobina 12-15 g/dL, hematocrito 36-50%, VCM 80-100 fL, HCM 32-36 g/dL, RDW 12-15%, neutrófilos 45-75%, linfocitos 15-45%, reticulocitos 0.5-2%, hierro sérico 50-160, transferrina 200-400, saturación de transferrina 20-50%.
+
+Anemias microcíticas (<80 fL):
+• Alteración de membrana: esferocitosis congénita, anemia inmunohemolítica por anticuerpos calientes.
+• Falta de hierro: ferropénica (más común de todas), trastornos crónicos.
+• Alteración de globinas: talasemias.
+• Alteración del grupo hemo: anemia sideroblástica (causas: isoniazida, saturnismo).
+
+Anemias normocíticas: trastornos crónicos (más común), aplasia medular, sangrado agudo, hemolítica sin reticulocitosis.
+
+Anemias macrocíticas: con reticulocitos ↑: sangrado, hemolítica con reticulocitosis. Con reticulocitos normales/↓:
+• Megaloblástica (neutrófilos hipersegmentados): déficit de B12 (<200, con déficit neurológico) o ácido fólico (<2).
+• No megaloblástica: alcoholismo (más común de las macrocíticas), hipotiroidismo, quimioterapia, hepatopatías, aplasia.
+
+RDW: VCM↓+RDW↑ → ferropénica. VCM↓+RDW normal → talasemia. VCM↑+RDW↑ → megaloblástica. VCM normal+RDW↑ → déficit B12/folato.`},
+{title:"Coagulación, anticoagulantes y transfusión", content:`Valores: TP 10-15s, TTP 40-45s, INR 0.8-1.2, fibrinógeno 200-400 mg/dL, dímero D >500 ng/mL elevado.
+
+Anticoagulantes:
+• Warfarina: antagonista de vitamina K; reversión rápida con plasma fresco congelado; se monitoriza con TP/INR.
+• Heparina de bajo peso molecular: recomendada en el embarazo; antídoto sulfato de protamina; se monitoriza con TTPa.
+• Dabigatrán: acción directa oral; antídoto idarucizumab; se monitoriza con anti-factor Xa.
+
+Enfermedades sanguíneas: Von Willebrand → factor de Von Willebrand. Hemofilia A → factor VIII. Insuficiencia hepática → plasma.
+
+El mejor examen para evaluar respuesta al tratamiento con hierro en anemia: recuento de reticulocitos.
+Concentrados plaquetarios almacenados a temperatura ambiente: mayor riesgo de bacteriemia.
+Tiempo de sangría: evalúa hemostasia primaria, normal <8-10 min.
+Cuerpos de Auer: leucemia mieloide aguda.`}
+]},
+{specialty:"Nefrología", topics:[
+{title:"Gasometría, anion gap y equilibrio ácido-base", content:`Valores normales: pH 7.35-7.45, HCO3⁻ 22-26 mEq/L, pCO2 35-45 mmHg, pO2 80-100 mmHg, exceso de base ±2.
+Anion gap = Na⁺ − (Cl⁻ + HCO3⁻); normal 8-12 mEq/L.
+
+Acidosis metabólica con AG aumentado (regla C.R.E.A.D.O.R.): Cetoacidosis, Rabdomiólisis, Etanol, Ácido acetilsalicílico, Drogas (metanol, formaldehído, etilenglicol, paracetamol), Oxígeno↓ (láctica), Renal (uremia).
+
+Acidosis metabólica con AG normal (regla A.A.A.D.F.E.): Acetazolamida, Acidosis tubular renal, insuficiencia Adrenal, Diarrea, Fístulas, Enfermedad renal crónica.`},
+{title:"Diuréticos", content:`1) Inhibidores de anhidrasa carbónica (acetazolamida): adversos — acidosis metabólica, hipokalemia, litiasis renal; contraindicado en cirrosis, IRC severa.
+2) Osmóticos (manitol, glicerina): adversos — edema pulmonar, deshidratación; contraindicado en anuria, ICC, hemorragia intracraneal activa.
+3) De asa (furosemida): adversos — ototoxicidad, hipokalemia, alcalosis metabólica; contraindicado en hipovolemia severa.
+4) Tiazidas (hidroclorotiazida, clortalidona): adversos — hipokalemia, hiponatremia, hiperuricemia, hiperglucemia; contraindicado en gota, hiponatremia severa.
+5) Ahorradores de potasio (espironolactona, amilorida): adversos — hiperkalemia; espironolactona → ginecomastia; contraindicado en hiperkalemia, IRC avanzada.`},
+{title:"Alteraciones electrolíticas", content:`Hipokalemia — ECG: onda T aplanada y amplia, onda U. Causas: anorexia nerviosa, dietas estrictas, laxantes, B2-agonistas (salbutamol), insulina.
+Hiperkalemia — ECG: onda T picuda, ensanchamiento QRS y PR, aplanamiento de onda P, alargamiento QT, fibrilación ventricular o asistolia.
+Corrección del sodio: 10-12 mEq en 24h y no más de 18 en 48h (evitar mielinólisis pontina).`},
+{title:"Insuficiencia renal aguda (IRA)", content:`Aumento de creatinina ≥0.5 mg/dL define IRA. Oliguria <500 mL/24h; anuria <100 mL/24h. En la fase poliúrica la principal complicación es la hipovolemia.
+
+Clasificación:
+• Prerrenal: azotemia por reducción del flujo sanguíneo renal (shock hipovolémico).
+• Parenquimatosa/intrínseca: aminoglucósidos, anfotericina B, aciclovir, metotrexato, AINEs.
+• Obstructiva/posrenal: hiperplasia prostática, cáncer, litiasis.
+
+Relación BUN/Creatinina: >20:1 prerrenal, 10-20:1 normal, <10:1 intrínseca.
+Relación Urea/Creatinina: >100:1 prerrenal, 40-100:1 normal, <40:1 renal.
+Fracción excretada de sodio (FENa): <1% prerrenal, 1-2% zona gris, >2% necrosis tubular aguda.
+Aclaramiento de creatinina normal: 100-130 mL/min. Fórmula: CrCl = UCr × volumen 24h / PCr × 1440.
+
+Indicaciones de diálisis urgente (A.E.I.O.U.): Acidosis, alteraciones Electrolíticas, Intoxicaciones, sObrecarga de volumen, Uremia.
+Consumo proteico: adulto normal 0.8 g/kg/día; IRC sin diálisis 0.6-0.8; IRC con diálisis 1-1.2.
+
+Nefritis intersticial aguda: causada por betalactámicos (principalmente), AINEs, IBP. Clínica: fiebre, rash, eosinofilia. Diferencial con NTA: cuadro agudo, sin eosinofilia, no responde a corticoides.`},
+{title:"Síndrome nefrótico y nefrítico", content:`Síndrome nefrótico — tétrada: proteinuria >3.5 g/día, hipoalbuminemia, edema, hiperlipidemia.
+Fisiopatología: hipovolemia severa → ↓TFG → activación SRAA → ↑aldosterona.
+Complicaciones: trombosis (pérdida urinaria de antitrombina III y proteína C), infecciones (pérdida de inmunoglobulinas), hipocalcemia (pérdida de vitamina D unida a proteínas).
+Causas: niños → cambios mínimos; adultos → glomeruloesclerosis focal y segmentaria, nefropatía diabética.
+Tratamiento: estatinas para la hiperlipidemia.
+
+Síndrome nefrítico — tríada: hematuria, edema, hipertensión arterial.
+Fisiopatología: ↓↓↓TFG por inflamación, hipervolemia, ↓aldosterona.
+C3 bajo: glomerulonefritis postestreptocócica, glomerulonefritis membranoproliferativa.
+
+Cólico nefrítico: dolor lumbar súbito con diaforesis, frialdad, palidez. Medicamentos: metamizol, diclofenaco, naproxeno.`},
+{title:"Cilindros urinarios y otros datos de nefrología", content:`Cilindros urinarios:
+• Hialinos: normal (puede indicar deshidratación).
+• Grasos: síndrome nefrótico (proteinuria y lipiduria).
+• Eritrocitarios: glomerulonefritis.
+• Leucocitarios: nefritis intersticial, pielonefritis, LRA.
+• Granulosos pigmentados (marrón turbio): necrosis tubular aguda.
+• Céreos y gruesos: enfermedad renal crónica.
+
+Otros datos: aminoglucósidos → NTA. Litiasis renal → TC sin contraste (no Rx). Ciprofloxacino o ceftriaxona en pielonefritis. Proteinuria por esfuerzo físico → aumento de permeabilidad capilar. Desmopresina = análogo de vasopresina. Anti-DNasa B 70% → estreptococo beta hemolítico.
+Ecuación de Cockcroft-Gault: usa creatinina, edad y peso.`}
+]},
+{specialty:"Salud Pública", topics:[
+{title:"Alcohol — intoxicación y abstinencia", content:`Grados de alcoholemia:
+• Grado 1 (20-50 mg/dL): euforia leve, desinhibición social.
+• Grado 2 (50-100 mg/dL): disminución de atención, alteración de coordinación fina.
+• Grado 3 (100-200 mg/dL): ataxia, nistagmus, disartria.
+• Grado 4 (200-300 mg/dL): confusión, vómitos, estupor, amnesia.
+• Grado 5 (>300 mg/dL): coma, depresión respiratoria, riesgo de muerte.
+
+Abstinencia: leve (6-24h: temblor, ansiedad, náuseas, vómitos); mayor (12-24h: alucinaciones con conciencia conservada); delirium tremens (48-96h: síntomas autonómicos, alucinaciones, desorientación).
+
+Test AUDIT: 0-7 riesgo bajo; 8-15 consumo de riesgo; 16-19 consumo abusivo; ≥20 dependencia alcohólica.`},
+{title:"Niveles de prevención y tipos de estudio", content:`Tipos de prevención: primaria (evitar que aparezca la enfermedad), secundaria (detección temprana/evitar complicaciones), terciaria (rehabilitación), cuaternaria (evitar iatrogenia), primordial (evitar factores de riesgo).
+
+Tipos de estudio epidemiológico:
+• Cohortes: seguimiento, evalúa exposición y luego el desenlace.
+• Transversal: evalúa en un punto específico del tiempo.
+• Casos y controles: retrospectivo, compara enfermos y sanos.
+• Ensayo controlado aleatorizado: asignación aleatoria a intervención vs. control.
+• Longitudinal: examina factores de riesgo y resultados a lo largo del tiempo.
+
+Violencia física — roles: personal médico (tamizaje en anamnesis), perito de fiscalía (examen físico), trabajo social (visitas domiciliarias), psicología (enfoque emocional).`},
+{title:"Ética en investigación y clasificación de riesgo", content:`Riesgo suicida (clasificación clínica, contexto de valoración de riesgo):
+• Leve: ideación sin planeación, con factores protectores.
+• Moderado: ideación con o sin planeación, probablemente con factores protectores.
+• Grave: ideas planificadas, antecedente de intento, sin factores de protección.
+• Extremo: idea o plan ejecutable en el momento.
+
+Documentos históricos de ética en investigación:
+• Informe Belmont (1979): derechos de los seres humanos en experimentación.
+• Código de Núremberg (1947): consentimiento voluntario, tras las atrocidades de la Segunda Guerra Mundial.
+• Declaración de Ginebra (1948): actualización del Juramento Hipocrático.
+
+Dispensarización (MAIS): I sano, II riesgo, III enfermedad, IV discapacidad.`}
+]},
+{specialty:"Dermatología", topics:[
+{title:"Infecciones micóticas", content:`Esporotricosis: micosis subcutánea por contacto con material vegetal o arañazo animal. Lesión nodular que se ulcera o sigue trayecto linfático, indolora (se confunde con leishmaniasis). Diagnóstico: biopsia y cultivo en medio Sabouraud. Tratamiento: itraconazol, terbinafina, anfotericina B.
+
+Tiña o dermatofitosis:
+• Corporis: lesión anular descamativa de bordes elevados y centro hipocrómico, pruriginosa; respeta plantas, palmas y cuero cabelludo.
+• Capitis: descamativa, alopecia, caspa, inflamación. Tratamiento de elección: griseofulvina.
+• Cruris: placas eritematosas descamativas en región inguinal, respeta testículos, pruriginosa.
+• Pedis: fisuras y descamación del pie. Unguium: engrosamiento ungueal.
+Tratamiento tópico: clotrimazol, ketoconazol, miconazol, terbinafina (la mejor). Oral: terbinafina para tiña capitis y onicomicosis.
+
+Pitiriasis versicolor: Malassezia, lesiones hiper/hipocrómicas con descamación fina en cuello/tronco/hombros/brazos. Diagnóstico: KOH. Tratamiento: ketoconazol.
+Candidiasis cutánea: Candida albicans, placas eritematosas húmedas brillantes con lesiones satélite, maceración en pliegues (a diferencia de dermatitis del pañal, respeta pliegues). Tratamiento: mantener seco + clotrimazol/ketoconazol.`},
+{title:"Dermatosis inflamatorias (psoriasis, dermatitis)", content:`Pitiriasis rosada: viral (HHV-6/7), placa heráldica con descamación central, lesiones en "árbol de Navidad", respeta cara/palmas/plantas/mucosas. Tratamiento: antihistamínicos.
+
+Psoriasis: hiperproliferación de linfocitos T. Placas eritematosas bien delimitadas con escamas plateadas adherentes, signo de Auspitz, en superficies extensoras (rodillas, codos).
+• Leve (<3% superficie): tópico (betametasona). Moderada (3-10%): tópico o fototerapia. Grave (>10%): sistémico o biológico.
+• Psoriasis guttata: erupción en gota tras faringitis o infección respiratoria alta.
+
+Dermatitis seborreica: Malassezia, eritema/descamación grasosa amarillenta/prurito en cuero cabelludo, región centrofacial, retroauricular, CAE, preesternal. Lactantes <3 meses y adultos 30-60 años. Tratamiento: ketoconazol. (Asociada a enfermedad de Parkinson.)
+
+Dermatitis atópica: prurito intenso, xerosis, lesiones eccematosas; antecedentes de asma/rinitis alérgica; superficies extensoras (codos, rodillas, cuello, muñecas, tobillos), cara en lactantes. Criterios de Hanifin y Rajka (mayores: prurito, ubicación típica, dermatitis crónica/recurrente, historia de atopia).`},
+{title:"Acné, cáncer de piel y otras entidades", content:`Acné vulgar: lesión básica = comedones.
+• Leve (<20 comedones/pápulas/pústulas): retinoides tópicos (adapaleno).
+• Moderado (20-100): retinoide tópico + peróxido de benzoilo + antibiótico según gravedad.
+• Severo (>100, nódulos/quistes): isotretinoína.
+• Muy severo: acné conglobata o fulminans.
+
+Carcinoma basocelular: lesión papular de borde descamativo y color perlado, evoluciona a úlcera central sangrante. Diagnóstico: biopsia por escisión.
+
+Impétigo: infección altamente contagiosa por S. aureus (ampolloso) o S. pyogenes (contagioso/no ampolloso). Costras color miel/amarillo dorado. Diagnóstico: cultivo. Tratamiento: localizado → mupirocina; extenso → cloxacilina o eritromicina + lavado con peróxido de benzoilo.
+
+Erisipela: infección aguda de dermis superficial por S. pyogenes. Placa eritematosa delimitada, edematosa, dolorosa, piel de naranja, signo de Godet. Tratamiento: penicilina, cefalexina o amoxicilina.
+
+Pediculosis: P. capitis (permetrina, repetir a los 7-10 días); P. corporis (lindano prohibido, riesgo neurológico); P. pubis.
+Escabiosis: contagio piel a piel prolongado, permetrina 5%, prurito nocturno intenso, surcos/túneles.
+
+Notas sueltas: onicomicosis → itraconazol. Vitíligo → lámpara de Wood. Fenitoína agrava el acné. Minociclina → LES inducido por fármacos y hepatitis autoinmune. Celulitis en DM2/enfermedad vascular periférica → Staphylococcus aureus.`}
+]},
+{specialty:"Genitourinario", topics:[
+{title:"Hiperplasia prostática benigna y cáncer de próstata", content:`HPB: crecimiento benigno, disminución de fuerza/calibre del chorro, dificultad para iniciar micción, retención urinaria.
+Tratamiento: tamsulosina/alfuzosina (antagonistas alfa-1, provocan hipotensión) para síntomas; finasteride/dutasteride (inhibidores 5-alfa reductasa, provocan alopecia) si hay aumento de tamaño, crecimiento rápido o sospecha de malignidad.
+
+Cáncer de próstata: >50 años, hematuria, pérdida de peso, dolor óseo (metástasis), tacto rectal sospechoso.
+Estadificación: T1 incidental, T2 confinado, T3 vesículas seminales, T4 extensión total.
+Factores de malignidad: PSA >4 evaluación, >10 alta sospecha, >20 mayor riesgo avanzado; velocidad PSA >0.75 ng/mL/año; PSA libre/total <20% cáncer, 20% HPB; Gleason alto (8-10).
+Otras: esfuerzo físico y prostatitis elevan el PSA. Criptorquidia: orquidopexia entre 6-12 meses. Seminoma drena a retroperitoneo.`},
+{title:"Urolitiasis, IVU y torsión testicular", content:`Urolitiasis: hiperoxaluria (evitar té, cacao, espinaca); diuréticos previenen cálculos de calcio; alopurinol para cálculos de ácido úrico; hipocitraturia (alcalinizar con citrato de potasio); cálculos de estruvita asociados a Proteus (requieren antibióticos, puede requerir retiro del cálculo).
+
+Infección urinaria (IVU) — confirmación: 100.000 UFC en micción media; >50.000 UFC en catéter de germen único; >1.000 UFC en punción suprapúbica. La bolsa recolectora no sirve para urocultivo. En embarazadas, cualquier bacteriuria asintomática requiere urocultivo.
+
+Torsión testicular: dolor testicular agudo intenso, trauma o criptorquidia. Detorsión quirúrgica urgente idealmente en las primeras 6 horas.
+Signos: Gouverneur (elevación/horizontalización del testículo, positivo = torsión); reflejo cremastérico (negativo = torsión); Prehn (alivio del dolor al elevar el testículo; negativo = torsión, sospechar); Angell (horizontalización del testículo contralateral, positivo = torsión).
+
+Epididimitis: infecciosa (N. gonorrhoeae o C. trachomatis) → ceftriaxona IM dosis única + doxiciclina 100 mg VO c/12h × 10 días. No infecciosa: reposo, elevación escrotal, hielo, AINEs.`}
+]},
+{specialty:"Ginecología", topics:[
+{title:"Infecciones vaginales, cervicitis y EIP", content:`Infecciones vaginales:
+• Vaginosis bacteriana: Gardnerella vaginalis; flujo grisáceo/fétido "olor a pescado"; criterios de Amsel (flujo homogéneo, pH>4.5, KOH/aminas positivas, células clave); tratamiento metronidazol 500 mg VO c/12h × 7 días.
+• Candidiasis: Candida albicans; secreción blanquecina grumosa, prurito; microscopía con levaduras/pseudohifas; fluconazol 150 mg dosis única (recurrente: 100-200 mg semanal × 6 meses).
+• Tricomoniasis: Trichomonas vaginalis; flujo amarillo espumoso fétido, cuello en fresa; metronidazol 2 g VO dosis única.
+
+Cervicitis: diagnóstico por cultivo de endocérvix (Thayer-Martin solo para gonorrea).
+• Gonorrea: ciprofloxacino 500 mg VO dosis única. • Chlamydia: azitromicina 1 g VO dosis única.
+
+Enfermedad inflamatoria pélvica (EIP): infección ascendente (endometrio, trompas, ovarios, peritoneo). Gérmenes: N. gonorrhoeae, C. trachomatis, anaerobios.
+Triada: dolor abdominal bajo/pélvico, dolor a la movilización cervical, dolor anexial. Otros: fiebre >38°C, dispareunia, flujo anormal.
+Tratamiento: ceftriaxona 500 mg IM dosis única (o ciprofloxacino) + doxiciclina 100 mg VO c/12h ×14 días (o azitromicina) + metronidazol 500 mg VO c/12h ×14 días si hay sospecha de anaerobios.
+Factores de riesgo: múltiples parejas, sin preservativo, ITS previa, EIP previa, DIU reciente.
+
+Verrugas genitales: podofilina 10-25%, imiquimod 5% (3x/semana), sinecatequinas 15%, podofilox 5%.`},
+{title:"Anticoncepción", content:`DIU de cobre: difícil inserción en nulíparas (no recomendado); asociado a dismenorrea y expulsión; no colocar si hay EIP o infección vaginal activa.
+DIU con levonorgestrel: el mejor para sangrado uterino anormal; misma contraindicación de EIP/infección.
+
+Anticonceptivos combinados: inhiben eje hipotálamo-hipófisis-ovario. Estrógeno ↓FSH; progesterona inhibe pico de LH y espesa moco cervical.
+Parche transdérmico: no recomendado en mujeres >90 kg; en zonas secas sin vello; se cambia semanalmente.
+
+Categorías OMS: 1 sin restricción, 2 beneficios>riesgos, 3 riesgos>beneficios, 4 contraindicado.
+
+Síndromes relacionados:
+• Síndrome de Morris (insensibilidad completa a andrógenos): cariotipo XY, fenotipo femenino, testículos no descendidos, testosterona normal, ausencia de útero, amenorrea primaria.
+• Síndrome de Kallmann: hipogonadismo + anosmia.
+• Malformación de Müller: vulva y ovarios normales, ausencia de útero.`},
+{title:"Cáncer ginecológico", content:`Factores relacionados con cáncer ginecológico: embarazo ectópico, anemia por pérdida menstrual.
+Anticonceptivos orales combinados: ↓riesgo de cáncer de ovario y endometrio; ↑riesgo de cáncer de cérvix y mama.
+
+Clasificación FIGO — cáncer de cuello uterino:
+• I: confinado al cuello (IA microscópica, IB visible/mayor invasión).
+• II: se extiende más allá del cuello sin alcanzar pared pélvica ni tercio inferior de vagina (IIA sin invasión parametrial, IIB con invasión parametrial).
+• III: compromete pared pélvica, tercio inferior de vagina o hidronefrosis.
+• IV: más allá de la pelvis (IVA vejiga/recto, IVB metástasis a distancia).
+Tamizaje: Papanicolaou anual.
+
+Cáncer de mama: origen ductal o lobulillar. Genes BRCA1/BRCA2. Enfermedad de Paget: lesión eccematosa del complejo areola-pezón.
+Triple evaluación: examen físico + mamografía (estándar) + biopsia (aguja gruesa en BIRADS 4-5).
+Tratamiento: tamoxifeno en tumores hormonales.`},
+{title:"Ciclo menstrual y trastornos", content:`Amenorrea según OMS: tipo I (FSH baja, estrógenos bajos), tipo II (FSH normal, eje normal, alteración ovárica o SOP), tipo III (falla ovárica, FSH elevada), tipo IV (alteración del tracto de salida/anatómica).
+
+Terminología: menorragia (ciclo >7 días), metrorragia (sangrado intermenstrual), oligomenorrea (>35 días y <6 meses), hipomenorrea (<30 mL), hipermenorrea (sangrado excesivo), amenorrea secundaria (>3 meses con ciclos regulares previos o >6 meses con irregulares).
+
+Menorragia disfuncional: agudo → estrógenos IV/VO o ACO combinados; largo plazo → ácido tranexámico o AINEs.
+
+Notas: menopausia = densidad mineral ósea <-2.5 (osteoporosis). SOP: ≥12 folículos de 2-9 mm. Postmenopáusica: 1200 mg calcio + 800 UI vitamina D.`}
+]},
+{specialty:"Obstetricia", topics:[
+{title:"Aborto", content:`Amenaza de aborto: sangrado escaso, cuello cerrado, dolor cólico, actividad cardíaca fetal presente → observación/reposo, a veces progesterona.
+Aborto inevitable: sangrado abundante, cuello dilatado, dolor intenso, sin expulsión.
+Aborto incompleto: expulsión parcial, cuello abierto, sangrado persistente, restos en eco → AMEU o misoprostol.
+Aborto completo: expulsión total, disminuye sangrado/dolor, cavidad vacía en eco.
+Aborto diferido (retenido): muerte embrionaria/fetal, cuello cerrado, sin expulsión, embrión sin actividad cardíaca.
+Aborto séptico: fiebre, secreción fétida, sangrado, dolor, signos de infección sistémica → antibióticos IV + evacuación uterina.
+Realización con misoprostol: 1er trimestre (<12 SG) 800 µg c/3h máx 3 dosis; 2do trimestre (12-22 SG) 400 µg c/3h máx 5 dosis.`},
+{title:"Anatomía pélvica y controles prenatales", content:`Diámetros de la pelvis: oblicuo (sindesmosis sacroilíacas a eminencia iliopectínea), transverso, conjugado vertical (promontorio a sínfisis).
+Conjugados pélvicos: verdadero/obstétrico 11 cm, obstétrico 10.5 cm, diagonal 12 cm.
+
+Control prenatal: inicio precoz <12 semanas, mínimo 5 controles (antes de 12 sem, 22-24, 27-29, 33-35, 38-40 semanas).
+Ecografía: 1er trimestre → longitud cráneo-rabadilla; 2do trimestre → pliegue nucal, fosa interhemisférica, cisterna magna, anomalías cromosómicas.
+Síndrome de Down: arteria umbilical única, ausencia de hueso nasal, fémur corto.
+
+Vacunas en el embarazo: Td entre las 27-36 SG.
+Cribado SGB: semanas 35-37, previo al parto, para profilaxis antibiótica con penicilina.
+Ganancia de peso: general 7-18 kg (según IMC pregestacional: <20→12-18kg; 20-24.9→10-17kg; 25-29.9→7-10kg; >30→6-7kg).`},
+{title:"Monitoreo fetal y evaluación anatómica", content:`Monitoreo fetal: en alto riesgo o desde semana 28. Indicaciones: líquido meconial, fiebre materna, sangrado intraparto, 30 min post-analgesia.
+Frecuencia cardíaca basal: Categoría I 110-160 lpm (normal); Categoría II variabilidad mínima o 160/<110 (no claro); Categoría III variabilidad ausente, desaceleraciones tardías, bradicardia persistente (patológico).
+Desaceleraciones: DIP I temprana (con la contracción, por compresión cefálica); DIP II tardía (después de la contracción, insuficiencia placentaria); DIP III variable (brusca, compresión del cordón).
+
+Altura uterina por semana: 12 sem→sínfisis, 16→entre sínfisis y ombligo, 20→ombligo, 24→arriba del ombligo, 28→entre ombligo y xifoides, 32→debajo de xifoides, 36→xifoides, 40→desciende.
+
+Maniobras de Leopold (28-30 SG): 1ª fondo uterino (situación fetal), 2ª laterales (dorso y extremidades), 3ª parte inferior (presentación), 4ª grado de encajamiento.`},
+{title:"Cambios fisiológicos y embarazo gemelar", content:`Sistema urinario en el embarazo: riñones aumentan ~1.5 cm, aumenta aclaramiento de creatinina, dilatación ureteral derecha, disminuye volumen residual vesical.
+Progesterona: 1er trimestre 10-44 ng/mL, 2do 19.5-82.5, 3er 65-290. ADH no cambia. Prolactina aumenta ~10 veces. Hormona de crecimiento disminuye.
+Laboratorio: neutrofilia hasta 80%, creatinina 0.4-0.9 mg/dL.
+
+Embarazo gemelar — discordancia de crecimiento: <20% normal, >20% anormal, >30% alto riesgo de muerte fetal.`},
+{title:"Preeclampsia y síndrome HELLP", content:`Preeclampsia: HTA + proteinuria o daño orgánico después de las 20 semanas.
+Sin criterios de severidad: PAS 140-159, PAD 90-109, proteinuria ≥300 mg, sin disfunción orgánica.
+Con criterios de severidad: PAS≥160, PAD≥110, creatinina>1.1, transaminasas x2, trombocitopenia<100.000, oliguria<500mL/24h, daño orgánico.
+
+Síndrome HELLP (clasificación de Mississippi):
+• Clase I: plaquetas <50.000, LDH>600, AST/ALT≥70.
+• Clase II: plaquetas 50.000-100.000, LDH>600, AST/ALT≥70.
+• Clase III: plaquetas 100.000-150.000, LDH>600, AST/ALT≥40.
+
+Proteinuria en tira: trazas <30 mg/dL, +1 30-100, +2 100-300, +3 300-1000, +4 >1000.
+
+Tratamiento de crisis hipertensiva: labetalol IV 20 mg, repetir cada 10 min doblando dosis (máx 80 mg/dosis o 300 mg acumulado); hidralazina IV 5 mg c/20 min (máx 20 mg); nifedipino VO 10 mg c/20 min (máx 60 mg).
+
+Profilaxis de convulsiones — sulfato de magnesio: carga 4 g IV en 20 min; mantenimiento 1-2 g/h IV hasta 24h posparto o 24h sin convulsión.
+Toxicidad: ROTS ausentes, FR>12/min, diuresis>30 mL/h. Antídoto: gluconato de calcio 1 g IV en 3 min.
+
+Maduración pulmonar (24-34 semanas si parto inminente en 7 días): betametasona 12 mg IM c/24h ×2 dosis; dexametasona 6 mg IM c/12h ×4 dosis.
+
+Diferencial: HTA crónica presente antes de las 20 semanas o que persiste después de 12 semanas posparto.
+
+Clave azul (código de emergencia obstétrica): oxígeno con mascarilla a 10 L/min; roles: asistente 1 (vía aérea/signos vitales), asistente 2 (canalizar/muestras/medicación), coordinador (liderar/evaluar), circulante (material/insumos).`},
+{title:"Diabetes gestacional y RCIU", content:`Diabetes gestacional: generalmente desde la semana 24; si glicemia >126 antes de esa semana, pensar en diabetes preexistente.
+Tamizaje: PTOG 24-28 semanas — basal <92, 1h <180, 2h <153 mg/dL. Alternativo: glucosa ayunas <92, o test de Sullivan <140 (o <120 en 2h). No son diagnósticos por sí solos.
+Metas glucémicas: ayunas <95, 1h posprandial <140, 2h <120. Con macrosomía: ayunas <80, 1h <130.
+
+Restricción del crecimiento intrauterino (RCIU):
+• Simétrico (tipo I, <20 semanas): anomalías cromosómicas y TORCH; reducción proporcional de CC, CA, LF, DBP.
+• Asimétrico (tipo II): CC conservada, CA disminuida (redistribución sanguínea); asociado a preeclampsia, diabetes, HTA; alteración de arteria umbilical y vasodilatación de cerebral media.`},
+{title:"Infecciones en el embarazo, RPM y otros datos", content:`Candidiasis vaginal en el embarazo: clotrimazol crema 2% ×3 días o 1% ×7 días; alternativa fluconazol 150 mg dosis única; recurrente clotrimazol 2% ×14 días.
+
+Antibióticos en infecciones del embarazo:
+• Metritis puerperal: clindamicina 900 mg + gentamicina.
+• Profilaxis de cesárea: cefazolina 2-3 g.
+• Endometritis posparto (cesárea): ampicilina/sulbactam + gentamicina + clindamicina.
+• IVU: nitrofurantoína 100 mg c/12h.
+• Ciprofloxacino: no usar en el embarazo.
+
+Rotura prematura de membranas (RPM): a término ≥37 sem, pretérmino <37 sem, prolongada >18h desde la ruptura.
+Diagnóstico: salida súbita de líquido claro, salida por el OCI en especuloscopia (NO tacto), lago amniótico. Pruebas: nitrazina (pH>6.5), ferning positivo, ecografía con oligohidramnios.
+Conducta: ≥37 sem finalizar embarazo (oxitocina); 34-36+6 generalmente finalizar; <34 sem manejo expectante si no hay infección + corticoides para maduración pulmonar.
+Tratamiento ATB si infección: ampicilina 2 g IV luego 1 g c/6h + eritromicina 250 mg c/6h.
+
+Otros datos: ácido valproico es muy teratogénico (suplementar ácido fólico 4 mg). Síndrome de Asherman: adherencias intrauterinas tras legrados.`},
+{title:"Parto", content:`Criterios de admisión obstétrica: actividad uterina regular y efectiva, borramiento >50%, dilatación 3-4 cm.
+
+Índice de Bishop (predice éxito de inducción): valora altura, borramiento, consistencia, dilatación, posición cervical. >6 → inducción favorable; <6 → maduración cervical previa.
+Posición transversa asociada a: multiparidad, placenta previa, pelvis estrecha.
+
+Fase de dilatación — fase activa: nulíparas ≥1 cm/h, multíparas ≥1.5 cm/h.
+Fase expulsiva — duración máxima: nulíparas 3h sin epidural/4h con epidural; multíparas 2h sin epidural/3h con epidural.
+Episiotomía: ángulo de 45-60°.
+
+Alumbramiento: 1) uterotónicos — oxitocina 10 UI IM y 20-40 UI en infusión (taquifilaxia, vida media 3-5 min, actúa como diurético); 2) tracción-contratracción; 3) útero contraído.
+
+Parto prematuro (evaluación 24-34 SG): longitud cervical <25mm considerar progesterona; fibronectina fetal positiva si >50 ng/mL. Manejo: progesterona para prevención, sulfato de magnesio para neuroprotección fetal.
+
+Muerte fetal: temprana <20 sem, intermedia 20-27 sem, tardía ≥28 sem. Riesgo de recurrencia 8 veces mayor con antecedente.`}
+]},
+{specialty:"Pediatría", topics:[
+{title:"Recién nacido y reanimación neonatal", content:`Peso al nacer: normal 2500-4000 g, bajo peso 1500-2500 g, muy bajo peso 1000-1500 g, extremadamente bajo <1000 g.
+Recepción con llanto: secado inmediato, apego precoz piel a piel, ligadura del cordón (1-3 min), lactancia exclusiva en la 1ª hora.
+Recepción sin llanto: reanimación neonatal.
+
+Signos de mala adaptación: palidez, cianosis, bradicardia (en el RN suele deberse a hipoxia). Normal: FC 120-150 lpm, FR 40-60 rpm.
+
+Pasos de reanimación: 1) calentar, 2) reposicionar, 3) aspirar secreciones, 4) secar, 5) estimular.
+Si no mejora: ventilación a presión positiva con oxígeno.
+Si no mejora (MR-SOPA): Mascarilla (ajustar), Reposicionar vía aérea, Succión boca/nariz, Open mouth, aumentar Presión (5 a 10, máx 40), Alternar vía aérea.
+Si persiste FC<60: compresiones torácicas (VPP 3:1). Si persiste: adrenalina.
+
+Hora dorada: secado + APGAR-CAPURRO, contacto piel a piel, lactancia materna.`},
+{title:"Distrés respiratorio del recién nacido", content:`Taquipnea transitoria del RN (más común, distrés tipo II): factores de riesgo — cesárea, madre con diabetes gestacional; resuelve en 48-72h.
+Neumonía connatal: factores de riesgo — prematuridad, corioamnionitis materna, RPM >18h.
+Enfermedad de membrana hialina (distrés tipo I): factor de riesgo — prematuridad.
+Síndrome de aspiración de meconio: factor de riesgo — posmadurez (post-término).
+Encefalopatía hipóxico-isquémica: se evalúa con escala de Sarnat y Sarnat.`},
+{title:"Ictericia neonatal", content:`Ictericia patológica: aparece en las primeras 24h; incremento >0.2 mg/dL/hora o >5 mg/dL/día; bilirrubina total >percentil 95; persiste >14 días (21 en prematuros); bilirrubina directa >2 mg/dL o >20% del total.
+Ictericia fisiológica: aparece después de 24h, pico día 3-5, desaparece antes de 14 días (21 en prematuros).
+Ictericia por lactancia materna: primera semana, mala ingesta, deshidratación, pérdida excesiva de peso.
+Ictericia por leche materna: después del día 5-7, RN sano con buena ganancia de peso, puede durar semanas.
+
+Causas hemolíticas:
+• Incompatibilidad ABO: madre O, hijo A o B; clínica más leve que Rh; puede aparecer desde el primer embarazo.
+• Incompatibilidad Rh: madre Rh(-), hijo Rh(+); hidrops fetal (ascitis, derrame pleural/pericárdico, anasarca); primer hijo sano, el siguiente afectado; Coombs directo positivo. Prevención: inmunoglobulina anti-D a la madre Rh(-) no sensibilizada a las 28 semanas y dentro de 72h posparto si el RN es Rh(+).
+
+Causas no hemolíticas: cefalohematoma, poliglobulia (>65%), prematuridad, hipotiroidismo congénito, atresia biliar (tríada: ictericia persistente, heces acólicas, coluria).
+
+Tratamiento: fototerapia (complicaciones: hipertermia, deshidratación, diarrea, exantema); exanguinotransfusión (indicaciones: riesgo de kernicterus, fracaso de fototerapia intensiva).`},
+{title:"Enfermedades exantemáticas", content:`Impétigo: costras color miel, lesiones de 1-3 cm. Ampolloso→S.aureus; contagioso→S.pyogenes. Tratamiento: localizado mupirocina, extenso cloxacilina o eritromicina + peróxido de benzoilo.
+
+Enfermedad de Kawasaki: vasculitis sistémica, <5 años. Fiebre ≥5 días + 4 de 5: conjuntivitis bilateral no exudativa, cambios en boca, exantema, cambios en manos/pies, adenopatía cervical. Ecocardiograma: arteritis coronaria. Tratamiento: inmunoglobulina IV + AAS.
+
+Escarlatina: Streptococcus pyogenes. Fiebre, faringoamigdalitis, lengua aframbuesada, exantema "piel de lija". Tratamiento: penicilina benzatínica 600.000 UI (<27kg) o 1.200.000 UI (>27kg).
+
+Rubéola: fiebre leve, adenopatías retroauriculares y occipitales.
+Exantema súbito (roséola): HHV-6, primero fiebre y luego exantema.
+Sarampión: incubación 10-21 días; complicación panencefalitis esclerosante subaguda. Tríada: fiebre alta, tos, conjuntivitis. Manchas de Koplik; exantema céfalo-caudal.
+Eritema infeccioso (Parvovirus B19): eritema malar "cachetes abofeteados"; puede relacionarse con aplasia drepanocítica.
+Varicela: mácula→pápula→vesícula→costra, lesiones en distintas etapas evolutivas.
+Mano-pie-boca: vesículas en manos, pies y boca.`},
+{title:"Infecciones respiratorias pediátricas", content:`Laringotraqueítis bacteriana: Staphylococcus aureus, inicio progresivo, tos perruna, irregularidad subglótica en Rx.
+Epiglotitis: Haemophilus influenzae tipo b, inicio súbito, posición en trípode, aspecto tóxico, signo del pulgar en Rx.
+
+Bronquiolitis vs. asma: bronquiolitis (lactante <2 años, primer episodio de sibilancias, antecedente viral VSR); asma (>2 años, episodios recurrentes, antecedente personal/familiar de atopia). Rx: hiperinsuflación, aplanamiento diafragmático, aumento de trama peribronquial.
+
+NAC pediátrica — dosis: amoxicilina 90 mg/kg/día; claritromicina 7.5 mg/kg/día; trimetoprim/sulfametoxazol 8-10 mg/kg/día c/12h.`},
+{title:"Parasitosis", content:`Giardiasis: sin fiebre ni sangre en heces, pérdida de peso, heces con mal olor, distensión abdominal. Diagnóstico: parásitos en heces. Tratamiento: metronidazol 250 mg/día o 15 mg/kg/día ×5-7 días.
+Strongyloides: pérdida de peso, prurito o "larva currens". Tratamiento: ivermectina 3 mg/día ×2 días.
+Ascariasis lumbricoide: frecuentemente asintomática, distensión, eliminación de gusanos; síndrome de Löeffler si hay migración pulmonar (tos, sibilancias, eosinofilia). Tratamiento: albendazol 400 mg dosis única.
+Trichuris trichiura: puede causar prolapso rectal, anemia, retardo del crecimiento. Tratamiento: albendazol 400 mg ×3 días.
+Enterobius vermicularis (oxiuros): prurito anal, bruxismo, vulvovaginitis. Diagnóstico: cinta de Graham. Tratamiento: albendazol 400 mg dosis única.`},
+{title:"Diarreas y rehidratación", content:`Fórmula de Holliday-Segar (requerimiento hídrico basal): 0-10 kg → 100 mL/kg/día; 11-20 kg → 1000 mL + 50 mL/kg adicional; >20 kg → 1500 mL + 20 mL/kg adicional.
+
+Plan B (deshidratación leve-moderada): SRO 50-100 mL/kg en 4 horas, reevaluar.
+SRO de baja osmolaridad (OMS): Na 75, K 20, Cl 65, citrato 10, glucosa 75 mmol/L; osmolaridad 245 mOsm/L.
+Plan C (deshidratación grave): IV 25 mL/kg/h (1ª hora 50 mL/kg, 2ª y 3ª hora 25 mL/kg cada una); VO o SNG 20 mL/kg/hora.
+Cristaloides: solución salina 154 mEq/L Na y Cl; lactato de Ringer 130 Na, 109 Cl, 4 K, 3 Ca, 28 lactato mEq/L.`},
+{title:"Crecimiento y desarrollo psicomotor", content:`Hitos del desarrollo:
+• 2 meses: sonríe socialmente, levanta un poco la cabeza.
+• 4 meses: sostiene la cabeza.
+• 6 meses: balbucea, se sienta con apoyo, pasa objetos de mano a mano.
+• 9 meses: se sienta sin apoyo, gatea, pinza imperfecta.
+• 12 meses: camina con apoyo o solo, pinza fina, señala objetos.
+• 18 meses: torre de 3 cubos, come con cuchara, ~10 palabras, come solo.
+• 2 años: sube escaleras, torre de 6 cubos, frases de 2 palabras.
+• 3 años: control de esfínteres.
+
+Controles de niño sano: primer control 3-5 días o 48-72h post-alta (lactancia e ictericia); primeros 8 meses mensual; 8-12 meses cada 2 meses; 1-2 años trimestral.
+Primera consulta: tamizaje metabólico (4-28 días), medición antropométrica, lactancia exclusiva, señales de peligro, planificación familiar.
+2-3 meses: bajo peso al nacer o prematuro <37 sem → hierro en gotas 2 mg/kg/día desde los 28 días hasta los 6 meses.
+6-9 meses: alimentación complementaria (huevo entero diario), hemoglobina cada 6 meses (cada 3 si hay anemia), hierro/multivitamínicos en polvo, vitamina A (6-11 meses 100.000 UI c/4-6 meses; 12-24 meses 200.000 UI c/4-6 meses).
+
+Displasia del desarrollo de cadera:
+• Neonato-3 meses: Barlow (cadera sale), Ortolani (cadera entra).
+• 3-12 meses: Galeazzi (altura distinta de rodillas), limitación de abducción (<60°).
+• Signo de Trendelenburg: cojera con báscula pélvica (también en agenesia de glúteo medio).
+Tratamiento: <6 meses arnés de Pavlik; >6 meses reducción.
+
+Percentiles: >+2DE sobrepeso/macrocefalia; -1 a +1DE normal; -2 a -1DE riesgo; -3 a -2DE desnutrición moderada/talla baja; <-3DE desnutrición/emaciación severa.`},
+{title:"Emergencias pediátricas", content:`Convulsión febril: asociada a fiebre >38°C en niños de 6 meses a 5 años, sin infección de SNC ni trastorno metabólico.
+• Simple: generalizada, un episodio en 24h, <15 min, niño neurológicamente sano.
+• Compleja: >15 min, más de una crisis en 24h, focal.
+Estado epiléptico: convulsión ≥5 min continuos o crisis repetidas sin recuperar conciencia.
+Tratamiento: 1ª línea benzodiacepinas (diazepam IV 0.2-0.5 mg/kg, lorazepam IV 0.1 mg/kg); 2ª línea levetiracetam, valproato, fenitoína.
+
+Superficie corporal quemada — regla de los 9 en niños: cabeza 18%, cada brazo 9%, tronco anterior/posterior 18% c/u, cada pierna 14%, periné 1% (en adultos cabeza 9%, pierna 18%).
+
+Hipoglucemia neonatal: <47 mg/dL en primeras 72h, <50 mg/dL después. Transitoria (≤7 días), persistente (>7 días), severa (≤25 mg/dL).
+Tratamiento: asintomática → dextrosa 10% 5-8 mg/kg/min IV; sintomática → bolo dextrosa 10% 2 mL/kg (200 mg/kg).
+
+Causas de mortalidad infantil: 1) neumonía e influenza, 2) enfermedad diarreica aguda, 3) complicaciones neonatales.
+Peso ideal: <1 año (edad meses×0.5)+4.5; 1-6 años (edad×2)+8; >6 años (edad×3)+3.
+FR normal por edad: <2 meses >60 rpm; 2-11 meses >50; 12 meses-5 años >40; >5 años >30.
+Notas: infección transplacentaria → Listeria monocytogenes. Eosinofilia >500/µL. Cistitis hemorrágica → Adenovirus.`}
+]},
+{specialty:"Bioética", topics:[
+{title:"Principios y modelos bioéticos", content:`Distribución: libertaria (autonomía individual, libre mercado) vs. restaurativa (justa distribución).
+
+Principios de la bioética:
+• Autonomía: respeto a las decisiones del paciente (omitir información al paciente/familiar es faltar a este principio). Relacionado con el Art. 362 de la Constitución (consentimiento informado, acceso a información, confidencialidad).
+• No maleficencia.
+• Beneficencia: actuar buscando el bien del paciente.
+• Justicia: distribución equitativa de recursos.
+
+Conceptos de responsabilidad: negligencia (omitir algo), impericia (falta de destreza), dolo (intención de hacer daño), pseudoiatrogenia (efectos adversos no atribuibles al personal médico).
+
+Modelos de toma de decisiones: interpretativo (guía valores ya conocidos) vs. deliberativo (valores no claros, busca compatibilidad).
+
+Conceptos sobre el final de la vida: eutanasia (muerte digna), cacotanasia (acelerar la muerte sin voluntad expresa del paciente), distanasia (prolongar innecesariamente la vida), ortotanasia (muerte sin prolongar, normal), eutanasia larvada (aliviar dolor con medicamentos que como efecto secundario acortan la vida), eutanasia eugénica-económica (por razones eugenésicas o económicas).`},
+{title:"Ética en investigación y confidencialidad", content:`Código deontológico: respeto, confianza y comportamiento.
+
+Investigación en seres humanos debe incluir: consentimiento informado, relación beneficio/riesgo favorable, respeto a la autonomía, protección de poblaciones vulnerables.
+
+Documentos históricos:
+• Código de Núremberg: primer código internacional de ética en investigación humana; consentimiento voluntario esencial; surge tras los experimentos nazis en la Segunda Guerra Mundial.
+• Declaración de Helsinki: prioriza el bienestar del participante sobre los intereses de la ciencia.
+• Informe Belmont: tres principios — autonomía, beneficencia, justicia.
+
+Confidencialidad y secreto profesional — excepciones: orden judicial, enfermedades de notificación obligatoria, riesgo para terceros, violencia/maltrato.`}
+]},
+{specialty:"Cirugía", topics:[
+{title:"Paciente politraumatizado — evaluación primaria (ABCDE)", content:`A: vía aérea y columna cervical. B: respiración. C: circulación. D: déficit neurológico. E: exposición.
+
+Indicaciones de intubación: Glasgow <8, quemaduras de vía aérea, fracturas faciales/mandibulares/traqueales.
+Escala de Mallampati: I (paladar blando, fauces, úvula, pilares visibles) a IV (solo paladar duro visible).
+
+B — Respiración:
+• Neumotórax a tensión: tráquea desviada + insuficiencia respiratoria + hipotensión. Tx: descompresión con aguja en 2º espacio intercostal línea medioclavicular, o 4º-5º espacio línea axilar anterior/media.
+• Neumotórax simple: aire pleural sin compromiso hemodinámico. Tx: si pequeño y estable, oxígeno + observación.
+• Hemotórax masivo: venas yugulares depletadas + tráquea desviada + hipotensión severa. Tx: toracotomía si >1.5L o >200mL/2-4h. Clasificación: leve <300cc, moderado 300-1500cc, masivo >1500cc.
+• Neumotórax abierto: herida penetrante con entrada/salida de aire. Tx: parche con 3 bordes.
+Trauma abdominal cerrado: ultrasonido (FAST).`},
+{title:"Choque y paro cardíaco", content:`Tipos de choque: hipovolémico, distributivo (neurogénico, anafiláctico, séptico — vasodilatación), obstructivo (neumotórax a tensión), cardiogénico.
+
+Shock anafiláctico: exposición a alérgeno + signos de shock + dificultad respiratoria. Tratamiento: oxígeno + adrenalina 0.3-0.5 mg IM.
+Shock neurogénico: lesión raquimedular, ↓tono simpático, sin taquicardia.
+Shock cardiogénico: causa más frecuente IAM. Tratamiento: dobutamina (si edema pulmonar) o dopamina (si hipotensión grave).
+
+Shock hipovolémico-hemorrágico (clasificación por grados I-IV): FC <100→>140, FR 14-20→>40, PA normal→↓, diuresis >30→mínima, pérdida de sangre <750mL→>2000mL, pérdida de volemia <15%→>40%. Signo más precoz: taquicardia. Tratamiento escalonado: cristaloides → cristaloides+sangre según grado.
+Transfusión masiva: 10 U de CGR en 24h o >4 unidades en 60 min. Complicaciones: hipotermia, anemia hemolítica.
+
+Paro cardíaco — ritmos no desfibrilables (asistolia, actividad eléctrica sin pulso): adrenalina, RCP >5 min obligatorio (después usar lactato mejor).
+Ritmos desfibrilables (TV sin pulso, FV): desfibrilar (bifásico 360J, monofásico 120-200J).
+Compresiones de alta calidad: profundidad 5 cm, frecuencia 100-120/min, expansión completa del tórax, relación 30:2.
+Causas reversibles (5H y 5T): Hipovolemia, Hipoxia, Hidrogeniones (acidosis), Hipo/hiperpotasemia, Hipotermia / Neumotórax a Tensión, Taponamiento cardíaco, Tóxicos, Trombosis pulmonar, Trombosis coronaria.
+
+Taquicardia: QRS estrecho → supraventricular (irregular = FA o flutter); QRS ancho → ventricular. Inestable → cardioversión eléctrica sincronizada.
+Fibrilación auricular: estable → betabloqueadores/diltiazem/digoxina + warfarina; inestable → cardioversión 120-200J (ecocardiograma previo para descartar trombos).`},
+{title:"Trauma torácico — docena mortal y clasificación ASA", content:`Seis lesiones letales inmediatas: neumotórax a tensión, neumotórax abierto, tórax inestable, hemotórax masivo, obstrucción de vía respiratoria, taponamiento cardíaco.
+Seis lesiones ocultas: lesión esofágica, lesión traqueobronquial, contusión pulmonar, contusión cardíaca, desgarro diafragmático, desgarro aórtico.
+
+Clasificación ASA (riesgo anestésico): I sano; II enfermedad sistémica controlada; III enfermedad sistémica mal controlada con limitación funcional; IV incapacitante con riesgo vital; V moribundo; VI muerte cerebral.
+METs: 1-4 no tolera actividad sin fatiga; 5-6 sube un piso; 7-10 trote ligero; >10 deporte vigoroso.`},
+{title:"Heridas y quemaduras", content:`Fases de cicatrización: 1) hemostasia e inflamación, 2) proliferación, 3) maduración y remodelación.
+
+Grado de contaminación de heridas: limpia (I, riesgo 1-5%, sin entrada a cavidades); limpia-contaminada (II, riesgo 5-10%, entrada controlada); contaminada (III, riesgo 10-20%, contaminación/perforación sin pus); sucia (IV, riesgo 20-40%, pus o tejido necrótico).
+Cierre: primera intención (cierre rápido); segunda intención (reepitelización, preferible en heridas contaminadas/infectadas); tercera intención (cierre primario diferido).
+
+Quemaduras — clasificación: 1er grado (epidermis, eritema); 2do grado superficial (dermis papilar, ampollas) y profunda (dermis reticular, base blanquecina); 3er grado (todo el espesor, sin dolor); 4to grado (tejido subcutáneo/músculo/hueso).
+Fórmula de Parkland: 4 mL × kg × %SCQ; primera mitad en las primeras 8h, segunda mitad en las 16h siguientes.
+
+Síndrome compartimental — las 6 P: Pain (dolor, signo más precoz), Pain with passive stretch, Parestesias, Palidez, Parálisis, Pulselessness (ausencia de pulso, signo tardío). Tratamiento: fasciotomía. No comprimir ni retrasar la cirugía esperando estudios.`},
+{title:"Enfermedad inflamatoria intestinal", content:`Colitis ulcerosa: diarrea sanguinolenta crónica/recurrente, tenesmo, urgencia defecatoria. Manifestación extraintestinal más común: espondilitis anquilosante.
+Clasificación de Montreal: limitada al recto, colitis izquierda (hasta flexura esplénica), colitis extendida (todo el colon).
+Complicaciones: colangitis esclerosante primaria, megacolon tóxico. Histología: deformación de criptas, plasmocitos basales, agregados linfoides.
+Tratamiento: leve → mesalazina; grave → corticoides.
+
+Enfermedad de Crohn: edad 15-35 y 50-70 años. Diarrea crónica + dolor abdominal (similar a apendicitis) + fístulas o lesiones bucales.
+Histología: afecta íleon terminal y colon, inflamación transmural, fístulas.
+Tratamiento: leve → budesonida; moderada → prednisona.`},
+{title:"Hernias", content:`Hernia inguinal: más frecuente, predominio en hombres, superior al ligamento inguinal.
+• Indirecta: contenido irreductible; congénita (jóvenes); lateral a vasos epigástricos; atraviesa el anillo inguinal profundo (persistencia del proceso vaginal).
+• Directa: contenido reductible; adquirida (ancianos); medial a vasos epigástricos; por debilidad de pared posterior del canal inguinal.
+Triángulo de Hesselbach: medial (borde lateral del recto abdominal), lateral (vasos epigástricos inferiores), inferior (ligamento inguinal). Tratamiento: hernioplastia.
+
+Hernia femoral: más frecuente en mujeres; debajo del ligamento inguinal (medial a la vena femoral); mayor riesgo de incarceración/estrangulación que la inguinal.
+Complicaciones: hernia incarcerada (no se reduce, dolor, obstrucción intestinal) vs. estrangulada (compromiso vascular, isquemia, necrosis) → cirugía inmediata.`},
+{title:"Colecistitis y colangitis", content:`Colecistitis aguda — criterios de Tokio: A) signos de inflamación local (Murphy positivo, dolor en hipocondrio derecho); B) signos de inflamación sistémica (fiebre, leucocitosis, PCR elevada); C) hallazgos por imagen compatibles. Sospecha = A+B; diagnóstico definitivo = A+B+C.
+Diagnóstico ecográfico: cálculos, líquido perivesicular, engrosamiento de pared >3mm, Murphy ecográfico positivo. Tratamiento: colecistectomía laparoscópica temprana.
+
+Colangitis aguda: infección bacteriana de la vía biliar por obstrucción; urgencia médica (riesgo de sepsis/shock séptico). Gérmenes: E. coli, Klebsiella, Enterococcus, Enterobacter.
+Tríada de Charcot: fiebre + ictericia + dolor en hipocondrio derecho. Péntada de Reynolds: tríada de Charcot + alteración del estado mental + hipotensión.
+Diagnóstico: ecografía abdominal (primer estudio); CPRE (diagnóstica y principalmente terapéutica).`}
+]},
+{specialty:"Abdomen agudo", topics:[
+{title:"Diverticulitis y apendicitis", content:`Diverticulitis: inflamación/infección de un divertículo colónico. >50 años, dieta baja en fibra, obesidad, sedentarismo. Localización más frecuente: colon sigmoides.
+Tríada: dolor en FII, fiebre, leucocitosis. Otros: náuseas, vómitos, estreñimiento o diarrea.
+Diagnóstico: TAC abdominal con contraste. Contraindicada la colonoscopia en fase aguda (riesgo de perforación) — se realiza 6-8 semanas después para descartar cáncer colorrectal.
+Tratamiento no complicada (estable): dieta líquida, analgesia, antibióticos (ciprofloxacino + metronidazol). Complicada (absceso, fístula, perforación, peritonitis): antibióticos IV + cirugía si perforación/peritonitis + drenaje si absceso grande.
+
+Apendicitis aguda: inflamación por obstrucción luminal (fecalito, hiperplasia linfoide).
+Escala de Alvarado: migración del dolor a FID (1), anorexia (1), náuseas/vómitos (1), dolor en FID (2), rebote/Blumberg (1), fiebre (1), leucocitosis>10.000 (2), desviación izquierda (1). Total 10. Interpretación: 1-4 baja probabilidad, 5-6 consistente pero no diagnóstica, 7-8 alta probabilidad, 9-10 casi certeza.
+Maniobras: McBurney, Rovsing, Psoas, Obturador, Aaron (dolor epigástrico/precordial al presionar McBurney), Ten Horn (dolor al traccionar el testículo derecho).
+Diagnóstico: TAC abdominal (gold estándar, especificidad 80-90%, sensibilidad 94-98%); en niños y embarazadas → ecografía.
+Tratamiento: apendicectomía laparoscópica + antibióticos (ceftriaxona + metronidazol, o ampicilina/sulbactam).`},
+{title:"Otras causas de abdomen agudo", content:`Isquemia mesentérica aguda: abuelo + fibrilación auricular + dolor abdominal + probable shock.
+Isquemia mesentérica crónica: ateroesclerosis + dolor abdominal postprandial + pérdida de peso (miedo a comer).
+Colitis isquémica: cardiopatía de bajo gasto + dolor abdominal bajo + rectorragia + imagen en huellas dactilares.
+Bridas y adherencias posquirúrgicas: antecedente de cirugía abdominal + dolor cólico + vómitos + distensión + ausencia de heces/gases + niveles hidroaéreos en Rx/TAC.
+Vólvulo: anciano + estreñimiento + distensión + dolor + ausencia de heces/gases + imagen en "grano de café".
+
+Porcentaje de patología visible en Rx: 5% apendicolitos, 10% biliares, 90% renales.
+Otros datos: feocromocitoma → fentolamina (bloqueador alfa); cefazolina sí puede darse en alergia a penicilina; concentrado de plaquetas 1 unidad por cada 10 kg; cirugía bariátrica IMC>40 sin comorbilidades o IMC 35-40 con comorbilidades.`},
+{title:"Hemorragia digestiva", content:`Hemorragia digestiva alta (por encima del ligamento de Treitz): hematemesis, melena.
+Causas: úlcera péptica (más frecuente), gastritis erosiva, várices esofágicas, desgarro de Mallory-Weiss.
+Úlcera péptica: diagnóstico endoscopia <24h; tratamiento IBP IV + endoscopia terapéutica. Complicación: obstrucción pilórica.
+Várices esofágicas: antecedente de cirrosis/HT portal, hematemesis masiva. Tratamiento: 1) reanimación, 2) octreótido, 3) antibiótico profiláctico (ceftriaxona), 4) ligadura endoscópica.
+Desgarro de Mallory-Weiss: laceración longitudinal de la unión gastroesofágica por vómitos/arcadas intensas (especialmente alcohólicos); no confundir con Sd. de Boerhaave (perforación esofágica).
+
+Hemorragia digestiva baja: hematoquecia, rectorragia. Causas: diverticulosis (más frecuente), angiodisplasia, cáncer colorrectal, hemorroides.
+Hemorroides — clasificación: grado I (no prolapsan), II (prolapsan y se reducen solas), III (prolapsan, requieren reducción manual), IV (prolapso permanente irreductible).`}
+]},
+{specialty:"Digestivo (Medicina Interna)", topics:[
+{title:"Fisiología digestiva y absorción", content:`Vitaminas hidrosolubles: C y complejo B. Liposolubles: A (retinol), D (calciferol), E (tocoferol), K (filoquinona).
+Absorción por segmento: duodeno (hierro, calcio, magnesio); yeyuno (folato/B9); íleon terminal (B6-B12, sales biliares).`},
+{title:"Pancreatitis aguda", content:`Inflamación aguda por activación intrapancreática de enzimas, autodigestión del tejido pancreático.
+Etiología: litiasis biliar (más frecuente), alcohol, hipertrigliceridemia (>500-1000 mg/dL), post-CPRE.
+Signos: Cullen (equimosis periumbilical, sugiere hemorragia retroperitoneal); Grey Turner (equimosis en flancos, pancreatitis hemorrágica grave).
+Clínica: dolor epigástrico intenso irradiado a espalda "en cinturón", inicio súbito, mejora al inclinarse hacia adelante, náuseas/vómitos/distensión.
+Diagnóstico (2 de 3 criterios): dolor típico; amilasa o lipasa ≥3x límite superior (lipasa más sensible/específica); hallazgos característicos en TAC/RM (TC es el estudio a realizar).
+
+Índice de Balthazar (A-E, 0-4 puntos) + puntos de necrosis pancreática (0%=0, <30%=2, 30-50%=4, >50%=6) = Índice de severidad tomográfica (CTSI): 0-3 baja, 4-6 moderada, 7-10 alta.
+
+Tratamiento: 1) hidratación agresiva con lactato de Ringer IV; 2) analgesia con opioides (morfina contraindicada, aumenta presión del esfínter de Oddi); 3) nutrición enteral precoz; 4) tratar la causa (colecistectomía si biliar, control de triglicéridos, suspender alcohol).`},
+{title:"Cirrosis hepática y cáncer digestivo", content:`Cirrosis — etiología: alcohol, hepatitis B, hepatitis C. Colangitis biliar primaria: ictericia sin dolor ni hepatomegalia.
+Signos clásicos: ictericia, telangiectasias, ginecomastia, cabeza de medusa, ascitis, edema.
+Child-Pugh (bilirrubina, albúmina, TP, encefalopatía, ascitis): A 5-6 (compensada), B 7-9 (deterioro moderado), C 10-15 (descompensada, peor pronóstico).
+Peritonitis bacteriana espontánea: estafilococos, estreptococos, enterobacterias — NO anaerobios.
+
+Cáncer de páncreas: signo de Courvoisier (vesícula palpable no dolorosa con ictericia); DM presente en un tercio de casos avanzados; tipo más frecuente adenocarcinoma ductal (~90-95%).
+Cáncer colorrectal: factores de riesgo — EII, dieta rica en grasas/carnes rojas, >50 años. Lesiones precancerosas: adenoma velloso y tubular. Anemia ferropénica en hombre o mujer posmenopáusica → descartar cáncer colorrectal.`},
+{title:"Gastritis y úlcera por Helicobacter pylori", content:`Clínica: dolor epigástrico, dispepsia, ardor/quemazón gástrica, distensión abdominal, saciedad precoz, náuseas.
+
+Los 4 esquemas de tratamiento (según el CACCES):
+• Esquema estándar: IBP (omeprazol 20 mg c/12h) + amoxicilina 1 g c/12h + claritromicina 500 mg c/12h.
+• Recurrencia: IBP + subcitrato de bismuto + metronidazol + tetraciclina (10-14 días).
+• Cepas resistentes: amoxicilina + levofloxacino + tinidazol.
+• Alergia a penicilina: IBP + claritromicina + metronidazol.
+Subsalicilato de bismuto provoca heces negras (no confundir con melena).
+Verificación de remisión: prueba de aliento con urea (mayor sensibilidad/especificidad) o antígeno en heces (≥4 semanas después).
+
+Otras entidades: síndrome de asa aferente (postgastrectomía, dolor posprandial + distensión + diarrea); síndrome de Zollinger-Ellison (gastrinoma, hipersecreción ácida, úlceras múltiples recurrentes); síndrome de Gilbert (joven sano, ictericia leve tras ayuno/estrés); atresia duodenal (signo de doble burbuja).`}
+]},
+{specialty:"Cardiología", topics:[
+{title:"ECG básico — ritmo, eje y bloqueos AV", content:`Valores normales: onda P <0.12s/<0.25mV; PR 0.12-0.20s; QRS hasta 0.12s.
+FC regular: 300/nº cuadros grandes entre RR, o 1500/nº cuadros pequeños. FC irregular: contar 30 cuadros grandes, nº de QRS en ese tramo ×10.
+Eje cardíaco (DI-aVF): +/+ normal; +/- izquierdo; -/+ derecho; -/- extremadamente desviado. Patrón infantil normal: T negativa en V1-V3.
+
+Bloqueo AV:
+• Grado I: PR prolongado, todas las P conducen.
+• Grado II Mobitz I (Wenckebach): PR se prolonga progresivamente, algunas P no conducen.
+• Grado II Mobitz II: PR constante, algunas P no conducen.
+• Grado III: disociación AV completa.
+Bradicardia inestable (síncope/IC): atropina 0.5-1 mg IV (hasta 3 dosis c/3-5 min).`},
+{title:"Taquiarritmias y fibrilación auricular", content:`Taquicardia QRS estrecho → supraventricular (irregular: FA o flutter — en flutter: quinidina + betabloqueante). QRS ancho → ventricular.
+Taquicardia inestable: cardioversión eléctrica sincronizada.
+
+Fibrilación auricular: pulso irregular + palpitaciones + disnea + fatiga. Valvulopatía mitral es causa frecuente.
+Manejo: FA estable → betabloqueadores/diltiazem/digoxina + warfarina. FA con inestabilidad hemodinámica → cardioversión eléctrica 120-200J (no cardiovertir sin ecocardiograma previo, riesgo de embolizar coágulos).
+
+Taquicardia ventricular con pulso: lidocaína, procainamida, bretilio (según el CACCES). Sin pulso: cardioversión (desfibrilación).
+
+Hipertrofia ventricular en ECG: HVI → V1 profunda, V5-V6 alta. HVD → V1 alta, V5-V6 profunda.
+Pericarditis posinfarto: depresión del PR y elevación del ST.`},
+{title:"Paro cardiorrespiratorio", content:`Ritmos no desfibrilables (asistolia, AESP): adrenalina; RCP >5 min obligatorio.
+Ritmos desfibrilables (TV sin pulso, FV): desfibrilar — bifásico 360J, monofásico 120-200J.
+Compresiones de alta calidad: profundidad 5 cm, frecuencia 100-120/min, expansión completa del tórax, relación 30:2.
+Causas reversibles — 5H (Hipovolemia, Hipoxia, Hidrogeniones/acidosis, Hipo/hiperpotasemia, Hipotermia) y 5T (Neumotórax a Tensión, Taponamiento cardíaco, Tóxicos, Trombosis pulmonar, Trombosis coronaria).`},
+{title:"Soplos cardíacos", content:`Nemotecnias: DISE — Diastólico=Insuficiencia aórtica/pulmonar, Sistólico=Estenosis aórtica/pulmonar. SIDE — Sistólico=Insuficiencia mitral/tricúspidea, Diastólico=Estenosis mitral/tricúspidea.
+
+Soplos sistólicos:
+• Estenosis aórtica (foco aórtico, irradia a cuello/carótidas). Estenosis pulmonar (S2 desdoblado + soplo eyectivo + HVD).
+• Insuficiencia mitral (holosistólico, irradia a axila). Insuficiencia tricuspídea.
+• Prolapso mitral. CIV (holosistólico intenso).
+Soplos diastólicos (siempre patológicos): insuficiencia aórtica/pulmonar; estenosis mitral (fiebre reumática)/tricuspídea.
+
+Comunicaciones anormales:
+• PCA: soplo continuo "en maquinaria", infraclavicular izquierda.
+• CIA: soplo sistólico eyectivo en foco pulmonar, desdoblamiento fijo de S2.
+• CIV: soplo holosistólico en borde esternal izquierdo; a menor tamaño del defecto, más intenso el soplo.
+
+Terminología: telesistólico (final de sístole), sistólico eyectivo (creciente-decreciente tras S1), protodiastólico (inicio de diástole), mesodiastólico (toda la diástole).
+Maniobra de Valsalva: disminuye la mayoría de los soplos, aumenta en miocardiopatía hipertrófica obstructiva y prolapso mitral (cuclillas hace lo contrario).
+Respiración: inspiración aumenta soplos derechos; espiración aumenta soplos izquierdos.`},
+{title:"Hipertensión arterial", content:`Clasificación (MSP): normal <120/<80; normal-alta 120-139/80-89; grado 1: 140-159/90-99; grado 2: 160-179/100-109; grado 3: >180/>110.
+Medidas no farmacológicas: sal 5g/día (2g Na) baja 5-6 mmHg; bajar de peso baja 1mmHg/kg; ejercicio 150 min/semana baja 5-8 mmHg.
+
+Efectos adversos de antihipertensivos:
+• IECA (nefro/cardioprotectores): tos (muy preguntada), angioedema, hiperpotasemia, disgeusia (captopril).
+• ARA II: hiperpotasemia, angioedema (menos frecuente).
+• Betabloqueadores: broncoespasmo (los no selectivos).
+• Calcioantagonistas no dihidropiridínicos: bradicardia, bloqueo AV, estreñimiento (verapamilo). Dihidropiridínicos: edema periférico (tobillo).
+• Diuréticos tiazídicos: hipopotasemia, hiperuricemia, hiperglicemia. De asa: hipopotasemia, ototoxicidad (furosemida). Ahorradores de K: ginecomastia, disfunción sexual.
+• Vasodilatadores: hidralazina → LES inducido; minoxidil → hipertricosis.
+• Alfa-bloqueadores: prazosina → hipotensión ortostática.`},
+{title:"Insuficiencia cardíaca", content:`Etiología: HTA (más frecuente), cardiopatía isquémica, valvulopatías, miocardiopatías, arritmias.
+Estimación de riesgo cardiovascular: verde <10%, amarillo 10-20%, naranja 20-30%, rojo 30-40%, rojo oscuro >40%.
+
+Criterios de Framingham (2 mayores, o 1 mayor + 2 menores = diagnóstico):
+• Mayores: ortopnea/DPN, edema agudo de pulmón, crepitantes, cardiomegalia, tercer ruido, ingurgitación yugular, reflujo hepatoyugular, PVC>16.
+• Menores: taquicardia>120, tos nocturna, disnea de esfuerzo, derrame pleural, hepatomegalia, edema en MMII.
+
+Clasificación por FEVI: ICFEp ≥50%, ligeramente reducida 41-49%, ICFEr ≤40%.
+NYHA: I sin limitación, II síntomas con actividad habitual, III con actividad menor, IV en reposo.
+AHA/ACC: A riesgo de IC, B cardiopatía estructural sin síntomas, C con síntomas, D avanzada/refractaria.
+
+Imagen: ecocardiograma (estudio de elección); Rx: cardiomegalia, redistribución vascular, líneas B de Kerley, edema en "alas de mariposa".
+Tratamiento: ARNI (sacubitrilo/valsartán), betabloqueadores (bisoprolol, carvedilol, metoprolol succinato), espironolactona, iSGLT2 (dapagliflozina/empagliflozina).`},
+{title:"Infarto agudo de miocardio", content:`Angina estable: dolor con esfuerzo, cede con reposo. Angina inestable: en reposo o con esfuerzos mínimos.
+Clínica: dolor torácico opresivo retroesternal, diaforesis, náuseas/vómitos, irradiación a brazo izquierdo/cuello/mandíbula/espalda.
+Equivalentes anginosos (diabéticos/ancianos): disnea, síncope, fatiga, sudoración.
+
+ECG — localización por derivaciones y arteria afectada: inferior (II,III,aVF → coronaria derecha); lateral alta (I,aVL → circunfleja); lateral baja (V5-V6 → circunfleja); septal (V1-V2); anterior (V3-V4 → descendente anterior izquierda).
+Biomarcadores: troponina I/T (más sensible/específica); CK-MB (útil en reinfarto).
+
+Tratamiento MONA-B: Morfina, Oxígeno (si SatO2<90%), Nitroglicerina, Aspirina 160-325mg, Betabloqueante. Tratamiento definitivo: revascularización.`},
+{title:"Taponamiento cardíaco y pericarditis", content:`Taponamiento cardíaco — tríada de Beck: hipotensión + ingurgitación yugular + ruidos cardíacos velados.
+Diagnóstico: ecocardiograma. ECG: taquicardia sinusal, bajo voltaje del QRS, alternancia eléctrica. Tratamiento: pericardiocentesis.
+
+Pericarditis — causas: Coxsackie, Echovirus, post-IAM (síndrome de Dressler).
+Clínica: frote pericárdico (más común), dolor retroesternal punzante pleurítico que mejora al sentarse e inclinarse hacia adelante.
+ECG pericarditis vs. IAM: ST difuso vs. localizado; PR↓ vs. normal; sin ondas Q vs. puede haberlas.
+Tratamiento: AINEs (aspirina/ibuprofeno) + colchicina (disminuye recurrencias).`}
+]},
+{specialty:"Neurología", topics:[
+{title:"Meningitis — etiología y LCR", content:`Etiología por edad:
+• Neonato (<1 mes): Streptococcus grupo B, E. coli, Listeria monocytogenes.
+• 1 mes-50 años: Neisseria meningitidis, Streptococcus pneumoniae.
+• >50 años: S. pneumoniae, Listeria monocytogenes.
+• Diabéticos/quemados: Klebsiella pneumoniae.
+• Neurocirugía/TCE: Staphylococcus aureus, Pseudomonas aeruginosa.
+
+Clínica: fiebre, cefalea, signos meníngeos (rigidez de nuca, Kernig, Brudzinski), convulsiones, alteración de conciencia.
+Diagnóstico: punción lumbar + análisis de LCR (gold estándar).
+• Normal: leucocitos 0-5, proteínas 40-70, glucosa <40% (60-70% de la glucemia).
+• Bacteriana: leucocitos >1000, proteínas <40, glucosa >250 (patrón invertido: alta proteína, baja glucosa relativa — revisar según tabla).
+• Tuberculosa: leucocitos 100-500, proteínas <45, glucosa 100-500.
+• Viral: leucocitos 10-500, proteínas 40-70, glucosa <150.
+• Guillain-Barré: leucocitos 0-5, proteínas 40-70, glucosa 45-1000 (disociación albúmino-citológica).
+
+Tratamiento empírico: 18-50 años → ceftriaxona + vancomicina. >50 años o inmunosuprimidos → + ampicilina (Listeria). Petequias + meningitis = pensar en meningococo. Profilaxis de contactos: rifampicina, ciprofloxacino o ceftriaxona IM.`},
+{title:"Trauma craneoencefálico y hematomas", content:`Escala de Glasgow: apertura ocular (4 espontánea a 1 ninguna), respuesta verbal (5 orientado a 1 ninguna), respuesta motora (6 obedece órdenes a 1 ninguna). Leve 13-15, moderado 9-12, grave ≤8.
+
+Hematoma epidural: rotura de arteria meníngea media; TAC imagen biconvexa/lenticular; NO cruza suturas.
+Hematoma subdural: ancianos y alcohólicos; TAC imagen semilunar; SÍ cruza suturas.
+Hemorragia subaracnoidea traumática: sangre en surcos y cisternas, cefalea intensa; complicaciones — hidrocefalia, vasoespasmo, resangrado.
+Fractura de base de cráneo: ojos de mapache, signo de Battle, otorragia, rinorraquia, otorraquia.
+
+Hipertensión intracraneal: cefalea, vómitos en proyectil, alteración de conciencia, papiledema. Tríada de Cushing: HTA + bradicardia + alteración respiratoria.
+Diagnóstico: TAC simple de cráneo.
+Manejo: manitol (no dar en hipotensos por ser diurético); lactato o solución salina (mejor para control); glucosa mantener 80-100; disminuir CO2 sin prolongar (riesgo de vasoconstricción); PAM >100 mmHg; PPC = PAM − PIC.`},
+{title:"Convulsiones y estado epiléptico", content:`Clasificación: crisis focales vs. generalizadas.
+• Tónico-clónica (gran mal): pérdida de conciencia, fase tónica (rigidez), fase clónica (sacudidas), período postictal.
+• Ausencias (pequeño mal): niños, desconexión de segundos, sin período postictal.
+• Mioclónicas, tónicas, clónicas, atónicas.
+
+Convulsión febril simple: generalizada, un episodio/24h, <15 min, niño sano. Compleja: >15 min, más de una crisis, focal.
+Estado epiléptico: ≥5 min continuos o crisis repetidas sin recuperar conciencia.
+Tratamiento: 1ª línea benzodiacepinas (diazepam IV 0.2-0.5 mg/kg, lorazepam IV 0.1 mg/kg); 2ª línea levetiracetam (vida media 6h), valproato, fenitoína (carga 20-30 min); 3ª línea sedación/intubación, midazolam en infusión, propofol.
+Nota: vida media de carbamazepina 30 horas.`},
+{title:"Demencias", content:`Corticales (Alzheimer): afasia, agnosia, apraxia.
+Subcorticales (Huntington): trastornos del movimiento (corea), bradipsiquia.
+
+Alzheimer: inicio insidioso progresivo, primer síntoma pérdida de memoria reciente, preserva función motora (atrofia de hipocampo y temporal medial). Tratamiento: inhibidores de acetilcolinesterasa (donepezilo, rivastigmina), memantina (si daño vascular asociado).
+Demencia vascular: inicio abrupto, signos focales, deterioro escalonado, relacionada con ECV previos; factores de riesgo HTA/DM/dislipidemia/tabaquismo.
+Demencia por cuerpos de Lewy: alucinaciones visuales + fluctuaciones cognitivas + parkinsonismo; alteración del sueño.
+Demencia frontotemporal: alteración conductual/personalidad, desinhibición, conducta social inapropiada, afasia progresiva.
+
+Tipos de memoria (orden): fijación → conservación → evocación → reconocer.`},
+{title:"Cefaleas", content:`Migraña: unilateral, pulsátil, moderada-grave, empeora con actividad física, 4-72h, náuseas/vómitos, fotofobia/fonofobia, aura (escotoma, fotopsias, zigzag, parestesias).
+Tratamiento: crisis → AINEs, triptanes. Profilaxis → topiramato, amitriptilina.
+
+Cefalea tensional: bilateral, opresiva (en banda), leve-moderada, 30 min, sin pulsátil/vómitos/fotofobia/fonofobia.
+
+Cefalea en racimos: unilateral muy intensa periorbitaria/temporal, 15-180 min, síntomas autonómicos ipsilaterales (lagrimeo, rinorrea, inyección conjuntival).
+
+Cefaleas secundarias:
+• Hemorragia subaracnoidea: "peor cefalea de su vida", inicio en trueno, náuseas/vómitos, rigidez de nuca.
+• Arteritis de células gigantes: >50 años, claudicación mandibular, cefalea temporal, alteraciones visuales.
+• Tumor cerebral: progresiva, peor por la mañana, vómitos en proyectil, déficit focal, papiledema.`},
+{title:"Neuralgia del trigémino y Guillain-Barré", content:`Neuralgia del trigémino: compresión vascular de la raíz (más común) o esclerosis múltiple (descartar en joven).
+Clínica: dolor facial unilateral tipo descarga eléctrica/lancinante, inicio súbito, segundos a 2 minutos, episodios recurrentes. Desencadenantes: masticar, hablar, cepillarse los dientes, afeitarse.
+Tratamiento: 1ª línea carbamazepina; refractarios → descompresión microvascular.
+
+Síndrome de Guillain-Barré: polirradiculoneuropatía inflamatoria autoinmune, antecedente de infección respiratoria/GI 1-4 semanas antes; máximo déficit en ≤4 semanas.
+Etiología: Campylobacter jejuni, CMV, virus de Epstein-Barr.
+Clínica: debilidad muscular progresiva ascendente (piernas→brazos), arreflexia/hiporreflexia.
+Diagnóstico: LCR (disociación albúmino-citológica). Tratamiento: inmunoglobulina IV o plasmaféresis.
+Variante: síndrome de Miller-Fisher (oftalmoplejía, ataxia, arreflexia).`},
+{title:"Síndromes medulares", content:`Síndrome medular completo: parálisis y pérdida de sensibilidad por debajo de la lesión, todas las modalidades, trastornos esfinterianos.
+Síndrome medular anterior: parálisis bilateral, pérdida de dolor/temperatura, cordones posteriores conservados (vibración/propiocepción intactas).
+Síndrome medular posterior (déficit B12, tabes dorsalis): pérdida de vibración/tacto fino/propiocepción (ataxia sensitiva), conserva dolor/temperatura, Romberg positivo, marcha tabética.
+Síndrome de Brown-Séquard (hemisección): parálisis ipsilateral, pérdida de dolor/temperatura contralateral.
+Síndrome medular central (hiperextensión cervical): mayor debilidad en miembros superiores, pérdida bilateral de dolor/temperatura "en capa", vibración/propiocepción conservadas.
+Síndrome del cono medular (L1): alteración precoz de esfínteres, menos dolor que cauda equina, hiperreflexia, disfunción sexual, déficit motor leve simétrico.
+Síndrome de cauda equina: dolor radicular intenso, debilidad asimétrica, arreflexia, anestesia en silla de montar, retención urinaria.
+
+Lesión nerviosa periférica: n. mediano → mano del predicador; n. radial → mano en gota; n. cubital → mano en garra.
+
+Otras: encefalopatía de Wernicke (déficit B1/tiamina, alcoholismo — tríada confusión/ataxia/oftalmoplejía); miastenia gravis (buscar alteraciones del timo); activador tisular del plasminógeno = trombolítico.`}
+]},
+{specialty:"Endocrinología", topics:[
+{title:"Diabetes mellitus tipo 2", content:`Clínica clásica: poliuria, polidipsia, polifagia, pérdida de peso.
+Diagnóstico: glucosa en ayunas ≥126 mg/dL; glucosa al azar ≥200 + síntomas clásicos; PTOG 75g a las 2h ≥200 mg/dL. Nota: HbA1c ≥6.5% NO es criterio diagnóstico para el MSP.
+Prediabetes: ayunas 100-125; PTOG 2h 140-199.
+
+Tratamiento: 1) estilo de vida (dieta, ejercicio ≥150 min/semana); 2) metformina (primera línea).
+Otros fármacos: iSGLT2 (beneficio en IC y enfermedad renal); agonistas GLP-1 (semaglutida/liraglutida, pérdida de peso); sulfonilureas (riesgo de hipoglicemia); inhibidores DPP-4 (contraindicados en IC).
+Metas de HbA1c: 6.5 diagnóstico; <7 meta habitual; <8 ancianos con mucha comorbilidad.`},
+{title:"Diabetes insípida y síndrome metabólico", content:`Diabetes insípida: déficit de ADH o resistencia renal. Poliuria >50 mL/kg/día (>3L/día adultos), osmolaridad urinaria <300 mOsm/kg.
+• Central: déficit de ADH (TCE, cirugía hipofisaria, tumores, idiopática).
+• Nefrogénica: riñón no responde a ADH (litio, hipercalcemia, hipopotasemia, enfermedad renal).
+Clínica: poliuria, nicturia, polidipsia intensa.
+Test de la sed + desmopresina: polidipsia primaria → osmolaridad aumenta con restricción; central → aumenta >50% tras desmopresina (ADH baja); nefrogénica → aumenta <50% (ADH normal/alta).
+
+Síndrome metabólico (≥3 criterios): triglicéridos ≥110; HDL <40(H)/<50(M); PA ≥130/85; glucosa ≥100; circunferencia abdominal >102cm(H)/≥88cm(M).
+Nota: fenfluramina no se usa en obesidad (daño cardiopulmonar).`},
+{title:"Trastornos tiroideos", content:`Hipotiroidismo — causa: tiroiditis de Hashimoto (autoinmune).
+Clínica: fatiga, aumento de peso, intolerancia al frío, estreñimiento, piel seca, bradicardia, voz ronca, mixedema, hiporreflexia.
+Laboratorio: primario (↑TSH, ↓T4L); secundario (↓/normal TSH, ↓T4L). Anticuerpos: anti-TPO (más importante), antitiroglobulina.
+Tratamiento: levotiroxina en ayunas 30-60 min antes del desayuno (1.6 mcg/kg/día; ancianos/cardiópatas iniciar con 25 mcg/día).
+
+Hipertiroidismo — causa: enfermedad de Graves.
+Clínica: pérdida de peso, intolerancia al calor, taquicardia, nerviosismo, temblor fino, diaforesis, diarrea, hiperreflexia.
+Laboratorio: primario (↓TSH, ↑T4L/T3); secundario (↑TSH, ↑T4L/T3). Anticuerpos: TRAb.
+Tratamiento: metimazol (primera elección); propiltiouracilo (1er trimestre del embarazo y tormenta tiroidea); propranolol (síntomas); yodo radiactivo.
+
+Tiroiditis: más común la granulomatosa/de Quervain, generalmente postviral (VRS).
+Bocio endémico: por alteración del metabolismo del yodo o bociógenos. Grados 0 (no palpable) a 3 (visible a distancia).
+Hiperparatiroidismo primario: adenoma paratiroideo único (causa más común).`},
+{title:"Lípidos y otras endocrinopatías", content:`Calorías por gramo: alcohol 7, proteínas 4, carbohidratos 4, lípidos 9. Restricción calórica: 5-10% del peso, 500-750 kcal.
+
+Escala de Fredrickson (dislipidemias): I (TG alto), IIa (colesterol alto), IIb (colesterol y TG altos), III (colesterol y TG altos + xantomas), IV (TG alto — obesidad/alcohol/DM), V (TG muy alto — riesgo de pancreatitis).
+Tratamiento: hipercolesterolemia → estatina; hipertrigliceridemia → fibratos.
+
+Enfermedad de Addison: pérdida de peso, hiperpigmentación cutánea, hipotensión, hiperkalemia, hipercalcemia.
+Otros datos: litio afecta la tiroides (hipotiroidismo, bocio) y causa diabetes insípida nefrogénica.`}
+]},
+{specialty:"Neumología", topics:[
+{title:"Neumonía adquirida en la comunidad — etiología", content:`Por edad:
+• <2 años: virus (VSR, rinovirus, parainfluenza, influenza, adenovirus).
+• 5-18 años: Mycoplasma pneumoniae (más frecuente), Chlamydophila pneumoniae, S. pneumoniae.
+• Adultos: S. pneumoniae, H. influenzae, Mycoplasma, Legionella, virus.
+• >65 años: S. pneumoniae, H. influenzae, bacilos gramnegativos, S. aureus.
+
+Por tipo: típicos (S. pneumoniae más frecuente, H. influenzae en EPOC/fumadores, M. catarrhalis); atípicos (Mycoplasma, Legionella, Chlamydophila); virus (Influenza, VSR, SARS-CoV-2).
+
+Clínica: tríada fiebre + tos + disnea; dolor pleurítico, taquipnea.
+Radiografía: consolidación lobar → neumococo; infiltrado intersticial bilateral → atípicos/virus; cavitación → S. aureus, Klebsiella, anaerobios, TB, aspergiloma; derrame pleural → complicación frecuente.
+
+Escala CURB-65 y tratamiento por severidad, sospecha de Pseudomonas: ver sección de Casos clínicos — Neumología en el módulo de Antibióticos.`},
+{title:"Tuberculosis — clasificación operativa (MSP)", content:`Mycobacterium tuberculosis (BAAR).
+Clasificación por historia de tratamiento: caso nuevo (nunca tratado o <1 mes); tratamiento tras fracaso; tratamiento tras pérdida de seguimiento (suspendió >1 mes); recaída (curado/completó y desarrolla nuevo episodio).
+Clasificación por resultado: curado (baciloscopia/cultivo negativo el último mes y un control previo); fracaso (positivo al 5º mes o al finalizar); pérdida de seguimiento (no inició o interrumpió ≥1 mes).
+Control de contactos: íntimo (>6h diarias, mismo domicilio); frecuente (<6h diarias); esporádico (no diario).
+Factores de riesgo: VIH, diabetes, corticoides prolongados, privación de libertad.
+Clínica: tos ≥2 semanas (MSP), expectoración, hemoptisis, fiebre vespertina, sudoración nocturna, pérdida de peso, astenia.
+(Diagnóstico, esquema 2HRZE/4HR y efectos adversos: ver Casos clínicos — Infectología general, módulo Antibióticos.)`},
+{title:"Asma", content:`Enfermedad inflamatoria crónica con obstrucción variable/reversible del flujo aéreo e hiperreactividad bronquial.
+Clínica: sibilancias, tos nocturna/madrugada, disnea, opresión torácica.
+Diagnóstico — espirometría (gold estándar): FEV1/FVC <0.70; tras salbutamol ↑FEV1≥12% y ≥200mL.
+
+Tratamiento de la exacerbación: oxígeno (SatO2 93-95%), corticoides sistémicos (prednisona VO, hidrocortisona o metilprednisolona IV), salbutamol inhalado (nebulización o inhalador+espaciador), ipratropio en crisis moderadas-graves.
+Tratamiento controlador: corticoides inhalados (budesonida, beclometasona, fluticasona). Rescate: salbutamol (SABA). Si no se controla, agregar LABA (formoterol, salmeterol — nunca solo, siempre con corticoide inhalado; salmeterol provoca temblor y taquicardia).`},
+{title:"EPOC y otras enfermedades respiratorias", content:`EPOC — factores de riesgo: tabaquismo (90%), biomasa/leña, déficit de alfa-1 antitripsina (<45 años).
+Clínica: disnea progresiva, tos y expectoración crónicas.
+Diagnóstico — espirometría post-broncodilatador: FEV1/FVC <0.70 confirma EPOC.
+Clasificación GOLD (FEV1): 1 ≥80%, 2 50-79%, 3 30-49%, 4 <30%.
+Escala mMRC: 0 (disnea solo con ejercicio intenso) a 4 (disnea al vestirse).
+Tratamiento: LAMA — tiotropio (broncodilatador de mantenimiento más importante). Aumenta el volumen residual por atrapamiento aéreo.
+
+Fibrosis quística: infecciones respiratorias recurrentes + malabsorción + insuficiencia pancreática.
+Apnea obstructiva del sueño: tratamiento nocturno con CPAP; después modafinilo.`}
+]},
+{specialty:"Infectología general", topics:[
+{title:"VIH", content:`Vías de transmisión: sexual (principal), sanguínea, vertical.
+Clasificación clínica OMS: 1) asintomática; 2) síntomas leves recurrentes, pérdida de peso <10%; 3) síntomas avanzados, pérdida >10% (puede incluir TB pulmonar); 4) SIDA, CD4<200 (infecciones oportunistas).
+Diagnóstico: tamizaje con prueba rápida o ELISA 4ª generación (antígeno p24 + anticuerpos VIH-1/2); carga viral (no diagnostica, sirve para seguimiento/respuesta); CD4 (estado inmunológico, riesgo de oportunistas).
+
+Tratamiento antirretroviral (todos los pacientes, independiente del CD4): ITIAN + ITIAN + ITINN.
+Esquema MSP: tenofovir + lamivudina/emtricitabina + efavirenz.
+Efectos adversos: tenofovir → nefrotóxico, fracturas (alternativa abacavir → hipersensibilidad); efavirenz → neuropsiquiátricos (alternativa atazanavir → hiperbilirrubinemia); zidovudina → anemia (alternativa abacavir/tenofovir); atazanavir → hiperbilirrubinemia (alternativa dolutegravir); dolutegravir → disturbios del sueño (alternativa atazanavir).`},
+{title:"Enfermedades transmitidas por vectores", content:`Dengue — vector: Aedes aegypti (principal), Aedes albopictus.
+Fase febril (2-7d): fiebre, cefalea, dolor retroocular, mialgias, artralgias, exantema, náuseas/vómitos.
+Fase crítica (al bajar la fiebre, día 3-7): extravasación plasmática, hemorragias, shock, falla orgánica.
+Fase de recuperación: reabsorción de líquido, mejoría, aumenta diuresis.
+Clasificación: sin signos de alarma; con signos de alarma (dolor abdominal intenso continuo, vómitos persistentes, sangrado de mucosas, derrame/ascitis, ↑hematocrito con ↓plaquetas, hepatomegalia>2cm); grave (choque, sangrado abundante, compromiso de órgano diana).
+Diagnóstico: primeros 5 días NS1; después del día 5 IgM.
+Tratamiento: paracetamol + cristaloides VO/IV. NUNCA AINEs ni corticoides.
+
+Malaria — vector: Anopheles. Agentes: P. falciparum (más grave), P. vivax (más frecuente en América), P. malariae, P. ovale.
+Fiebre terciaria (c/48h) en falciparum/vivax/ovale; cuartana (c/72h) en malariae.
+Clínica: escalofríos, fiebre alta, sudoración, mialgias, esplenomegalia, anemia, ictericia (hemólisis).
+Diagnóstico: gota gruesa (gold estándar).
+Tratamiento: P. vivax → cloroquina + primaquina (descartar déficit de G6PD antes); P. falciparum → arteméter + lumefantrina; embarazo → quinina + clindamicina (1er trimestre), arteméter-lumefantrina (desde 2º trimestre).
+Efectos adversos — cinconismo (por quinina): tinnitus, cefalea, visión borrosa, náuseas.
+
+Fiebre amarilla — vector: urbano Aedes aegypti, selvático Haemagogus.
+Fase inicial: fiebre, cefalea, mialgias, náuseas, vómitos. Fase tóxica (15%): ictericia, hemorragias, shock, insuficiencia renal/hepática. Signo de Faget: bradicardia relativa.
+
+Leishmaniasis — agente: Leishmania spp. (panamensis más común; braziliensis mucocutánea; mexicana cutánea; donovani/infantum visceral). Vector: flebótomo (Lutzomyia).
+Cutánea: pápula → nódulo → úlcera redondeada de bordes elevados, no mejora con antibióticos comunes.
+Diagnóstico: frotis con tinción de Giemsa. Tratamiento: antimoniales pentavalentes (cuidado en cardiopatía/hepatopatía/nefropatía/embarazo).`}
+]},
+{specialty:"Psiquiatría", topics:[
+{title:"Trastorno depresivo mayor y riesgo suicida", content:`≥5 síntomas durante ≥2 semanas (nemotecnia SIGECAPS): Sueño alterado, Interés↓/ánimo deprimido (obligatorio), culpa (Guilt), Energía↓, Concentración↓, Apetito/peso alterado, Psicomotricidad alterada, Suicidio.
+Tratamiento: 1ª línea ISRS (sertralina, escitalopram, fluoxetina). Hospitalizar si: riesgo suicida, síntomas psicóticos, incapacidad de autocuidado.
+
+Clasificación de riesgo suicida (contexto de valoración clínica):
+• Leve: ideación sin planeación, con factores protectores.
+• Moderado: ideación con o sin planeación, probablemente con factores protectores.
+• Grave: ideas planificadas, antecedente de intento, sin factores de protección.
+• Extremo: idea o plan ejecutable en el momento.`},
+{title:"Trastornos de ansiedad", content:`Trastorno de ansiedad generalizada: ansiedad >6 meses, difícil de controlar, con inquietud, fatiga, irritabilidad, tensión muscular, insomnio.
+Tratamiento: ISRS o terapia cognitivo-conductual.
+
+Trastorno de pánico: crisis súbita de 10-30 min con palpitaciones, disnea, dolor torácico, miedo a morir.
+Tratamiento: benzodiacepina para la crisis, ISRS a largo plazo.
+
+Trastorno obsesivo-compulsivo: obsesiones (pensamientos repetitivos no deseados) + compulsiones (conductas repetitivas para disminuir ansiedad). Tratamiento: ISRS o TCC.
+
+Trastorno de estrés postraumático: tras un trauma, duración >1 mes. Síntomas: reviviscencias, pesadillas, evitación, hipervigilancia.`},
+{title:"Esquizofrenia y trastorno bipolar", content:`Esquizofrenia: trastorno psicótico crónico, duración total ≥6 meses.
+Diagnóstico: ≥2 síntomas durante gran parte de ≥1 mes, al menos uno debe ser delirios/alucinaciones/lenguaje desorganizado.
+Síntomas positivos: delirios, alucinaciones auditivas, lenguaje/conducta desorganizados.
+Síntomas negativos: aplanamiento afectivo, abulia, anhedonia, alogia, aislamiento.
+Tratamiento: risperidona, haloperidol.
+
+Trastorno bipolar:
+• Manía: ≥1 semana, euforia/irritabilidad intensa, verborrea, pensamiento acelerado, puede haber psicosis, requiere hospitalización.
+• Hipomanía: ≥4 días, sin psicosis, no requiere hospitalización.
+• Bipolar I: al menos un episodio maníaco. Bipolar II: hipomanía + depresión.
+Tratamiento: litio (vigilar función renal y perfil tiroideo).`},
+{title:"Trastornos alimentarios y agitación psicomotriz", content:`Anorexia nerviosa: IMC bajo, restricción alimentaria, miedo intenso a engordar.
+Bulimia nerviosa: atracones, vómitos provocados, peso generalmente normal.
+Hallazgos físicos asociados: erosión dental, hipertrofia parotídea.
+
+Agitación psicomotriz — riesgo para sí mismo o terceros. Manejo escalonado: 1) contención verbal, 2) ambiente tranquilo, 3) fármacos si persiste (haloperidol), 4) contención física solo si hay riesgo para el paciente o terceros.`}
+]}
+];
+
 /* ============================================================
    QUIZ QUESTION BANK
    ============================================================ */
@@ -756,12 +1849,46 @@ const QUESTIONS = [
   {q:"Profilaxis antibiótica de rutina en cesárea, según el esquema obstétrico.", a:"Cefazolina 2–3 g", d:["Ciprofloxacino 500 mg","Vancomicina 1 g","Azitromicina 500 mg"]}
 ];
 
+const QUESTIONS_GENERAL = [
+  {q:"Paciente con dolor torácico opresivo irradiado a brazo izquierdo. El ECG muestra elevación del ST en II, III y aVF. ¿Qué arteria está afectada?", a:"Coronaria derecha", d:["Descendente anterior izquierda","Circunfleja","Tronco coronario izquierdo"]},
+  {q:"Tríada de Beck (hipotensión, ingurgitación yugular, ruidos cardíacos velados). ¿Diagnóstico?", a:"Taponamiento cardíaco", d:["Neumotórax a tensión","Pericarditis aguda","Insuficiencia cardíaca"]},
+  {q:"Mnemotecnia MONA-B en el infarto agudo de miocardio: ¿qué significa la 'N'?", a:"Nitroglicerina", d:["Naloxona","Noradrenalina","Nifedipino"]},
+  {q:"Signo del pulgar en la radiografía lateral de cuello, niño con aspecto tóxico en posición de trípode. ¿Germen más probable?", a:"Haemophilus influenzae tipo b", d:["Staphylococcus aureus","Streptococcus pyogenes","Virus parainfluenza"]},
+  {q:"Gestante Rh negativo no sensibilizada. ¿Cuándo se administra la inmunoglobulina anti-D de rutina?", a:"A las 28 semanas", d:["A las 12 semanas","En el primer trimestre","Solo si el bebé nace Rh positivo, antes del parto"]},
+  {q:"Tétrada clásica del síndrome nefrótico.", a:"Proteinuria, hipoalbuminemia, edema, hiperlipidemia", d:["Hematuria, edema, HTA, oliguria","Proteinuria, hematuria, HTA, edema","Hipoalbuminemia, hematuria, HTA, oliguria"]},
+  {q:"FENa >2%. ¿Qué tipo de lesión renal aguda sugiere?", a:"Necrosis tubular aguda", d:["Prerrenal","Posrenal obstructiva","Glomerulonefritis aguda"]},
+  {q:"Mujer con hipertensión, proteinuria y cefalea a las 32 semanas de gestación, con plaquetas 45.000, LDH elevada y transaminasas altas. ¿Diagnóstico?", a:"Síndrome HELLP", d:["Hígado graso agudo del embarazo","Preeclampsia sin criterios de severidad","Púrpura trombocitopénica idiopática"]},
+  {q:"Antídoto de la toxicidad por sulfato de magnesio.", a:"Gluconato de calcio", d:["Sulfato de protamina","Piridoxina","Naloxona"]},
+  {q:"Triada de Charcot (fiebre + ictericia + dolor en hipocondrio derecho). ¿Diagnóstico?", a:"Colangitis aguda", d:["Colecistitis aguda","Pancreatitis aguda","Hepatitis viral aguda"]},
+  {q:"Escala de Alvarado ≥9 puntos en paciente con dolor en FID. ¿Interpretación?", a:"Casi certeza de apendicitis", d:["Baja probabilidad","Requiere TAC obligatorio antes de decidir","Descarta apendicitis"]},
+  {q:"Paciente con debilidad ascendente tras infección gastrointestinal por Campylobacter, arreflexia. ¿Diagnóstico?", a:"Síndrome de Guillain-Barré", d:["Miastenia gravis","Esclerosis múltiple","Botulismo"]},
+  {q:"Cefalea unilateral muy intensa periorbitaria de 15-180 minutos con lagrimeo y rinorrea ipsilateral.", a:"Cefalea en racimos", d:["Migraña","Cefalea tensional","Arteritis de células gigantes"]},
+  {q:"Anciano con fibrilación auricular y dolor abdominal desproporcionado al examen físico. ¿Sospecha principal?", a:"Isquemia mesentérica aguda", d:["Diverticulitis","Colecistitis aguda","Pancreatitis aguda"]},
+  {q:"Recién nacido con hidrops fetal, Coombs directo positivo, madre Rh negativa.", a:"Incompatibilidad Rh", d:["Incompatibilidad ABO","Atresia biliar","Ictericia fisiológica"]},
+  {q:"Mujer con flujo grisáceo de olor a pescado, pH>4.5, células clave positivas.", a:"Vaginosis bacteriana", d:["Candidiasis vaginal","Tricomoniasis","Cervicitis gonocócica"]},
+  {q:"Fórmula de Parkland para reposición de líquidos en quemados.", a:"4 mL × kg × %SCQ", d:["2 mL × kg × %SCQ","100 mL/kg/día","30 mL/kg en 4 horas"]},
+  {q:"Test de Schober positivo, dolor lumbar que mejora con el ejercicio y empeora con el reposo, HLA-B27 positivo.", a:"Espondilitis anquilosante", d:["Artritis reumatoide","Fibromialgia","Osteoartritis"]},
+  {q:"Niño de 9 meses. Según los hitos del desarrollo, ¿qué se espera que ya haga?", a:"Sentarse sin apoyo y gatear", d:["Caminar solo","Torre de 3 cubos","Decir frases de 2 palabras"]},
+  {q:"Paciente con fiebre >38°C, exantema, conjuntivitis bilateral no exudativa y adenopatía cervical, menor de 5 años.", a:"Enfermedad de Kawasaki", d:["Escarlatina","Sarampión","Eritema infeccioso"]},
+  {q:"Espirometría con FEV1/FVC <0.70 que no mejora significativamente tras broncodilatador, antecedente de tabaquismo.", a:"EPOC", d:["Asma","Fibrosis quística","Bronquiolitis"]},
+  {q:"Hombre de 55 años con poliuria, polidipsia y pérdida de peso. Glucosa al azar de 250 mg/dL. ¿Qué más se necesita para el diagnóstico de diabetes con este valor?", a:"Nada más, ya cumple criterio (síntomas clásicos + glucosa ≥200)", d:["Una segunda glucosa en ayunas obligatoria","HbA1c ≥6.5% para confirmar","PTOG independientemente del resultado"]},
+  {q:"Paciente con bocio, exoftalmos, taquicardia y TSH suprimida. ¿Tratamiento de primera elección?", a:"Metimazol", d:["Propiltiouracilo","Levotiroxina","Yodo radiactivo como primera línea siempre"]},
+  {q:"Escala de Framingham: paciente con ortopnea, crepitantes pulmonares y cardiomegalia (todos mayores). ¿Cuántos criterios mayores tiene y qué se concluye?", a:"3 criterios mayores — cumple diagnóstico de insuficiencia cardíaca", d:["No es suficiente, se necesitan también criterios menores","Solo son hallazgos inespecíficos","Se necesita ecocardiograma antes de aplicar la escala"]},
+  {q:"Neonato con dificultad respiratoria, antecedente de parto por cesárea electiva a término, resolución en 48-72 horas.", a:"Taquipnea transitoria del recién nacido", d:["Enfermedad de membrana hialina","Síndrome de aspiración de meconio","Neumonía connatal"]},
+  {q:"Paciente con dolor abdominal en FII, fiebre y leucocitosis; TAC muestra engrosamiento de la pared del sigmoides sin absceso.", a:"Diverticulitis no complicada", d:["Apendicitis aguda","Colitis isquémica","Colangitis aguda"]},
+  {q:"Escala de coma de Glasgow de 7. ¿Qué acción es prioritaria?", a:"Asegurar la vía aérea (intubación)", d:["Solicitar TAC de cráneo antes que nada","Iniciar manitol de inmediato","Observación cada hora"]},
+  {q:"Mujer premenopáusica con anemia ferropénica sin causa ginecológica evidente. ¿Qué se debe descartar?", a:"Cáncer colorrectal", d:["Anemia de trastornos crónicos","Talasemia","Anemia megaloblástica"]},
+  {q:"Paciente con parestesias, tinnitus y visión borrosa tras iniciar tratamiento para malaria por P. vivax. ¿A qué se debe?", a:"Cinconismo por quinina", d:["Reacción alérgica a cloroquina","Toxicidad por primaquina en déficit de G6PD","Efecto adverso de arteméter-lumefantrina"]}
+];
+
 /* ============================================================
    STATE
    ============================================================ */
 let state = {
+  section:"atb",
   mode:"ref",
   activeGroup:0,
+  activeEsp:0,
   search:"",
   flashIndex:0,
   flashFlipped:false,
@@ -769,7 +1896,8 @@ let state = {
   quizIndex:0,
   quizScore:0,
   quizAnswered:false,
-  quizOrder:[]
+  quizOrder:[],
+  quizBank:"atb"
 };
 
 function shuffledIndices(n){
@@ -789,8 +1917,10 @@ function buildFlashDeck(){
   state.flashFlipped = false;
 }
 
-function buildQuizOrder(){
-  state.quizOrder = shuffledIndices(QUESTIONS.length);
+function buildQuizOrder(bank){
+  const bankArr = bank==='esp' ? QUESTIONS_GENERAL : QUESTIONS;
+  state.quizBank = bank;
+  state.quizOrder = shuffledIndices(bankArr.length);
   state.quizIndex = 0;
   state.quizScore = 0;
   state.quizAnswered = false;
@@ -804,6 +1934,24 @@ function renderGroupNav(){
   const sel=document.getElementById('groupSelect');
   nav.innerHTML='';
   sel.innerHTML='';
+
+  if(state.section==='esp'){
+    ESPECIALIDADES.forEach((s,i)=>{
+      const btn=document.createElement('button');
+      btn.className='group-btn'+(i===state.activeEsp && state.mode==='espref' ? ' active':'');
+      btn.innerHTML=`<span>${s.specialty}</span><span class="count">${s.topics.length}</span>`;
+      btn.onclick=()=>{ state.activeEsp=i; state.mode='espref'; state.search=''; document.getElementById('searchInput').value=''; render(); };
+      nav.appendChild(btn);
+
+      const opt=document.createElement('option');
+      opt.value=i; opt.textContent=s.specialty;
+      if(i===state.activeEsp) opt.selected=true;
+      sel.appendChild(opt);
+    });
+    sel.onchange=(e)=>{ state.activeEsp=parseInt(e.target.value); state.mode='espref'; render(); };
+    return;
+  }
+
   DATA.forEach((g,i)=>{
     const btn=document.createElement('button');
     btn.className='group-btn'+(i===state.activeGroup && state.mode==='ref' ? ' active':'');
@@ -912,6 +2060,40 @@ function renderCasos(){
 }
 
 /* ============================================================
+   RENDER: ESPECIALIDADES (CACES completo)
+   ============================================================ */
+function topicCard(t, specialtyLabel){
+  const card=document.createElement('div');
+  card.className='topic-card';
+  card.innerHTML=`<h3>${t.title}${specialtyLabel?` <span class="topic-specialty-tag">· ${specialtyLabel}</span>`:''}</h3><div class="topic-body">${t.content}</div>`;
+  return card;
+}
+
+function renderEspecialidad(){
+  const view=document.getElementById('view');
+  const q=state.search.trim().toLowerCase();
+
+  if(q){
+    let results=[];
+    ESPECIALIDADES.forEach(s=>s.topics.forEach(t=>{
+      const hay=(t.title+' '+t.content).toLowerCase();
+      if(hay.includes(q)) results.push({...t, specialty:s.specialty});
+    }));
+    if(results.length===0){
+      view.innerHTML=`<p class="no-results">No se encontraron temas para “${state.search}”.</p>`;
+      return;
+    }
+    view.innerHTML=`<div class="group-heading"><h2>Resultados para “${state.search}”</h2></div>`;
+    results.forEach(t=>view.appendChild(topicCard(t, t.specialty)));
+    return;
+  }
+
+  const s=ESPECIALIDADES[state.activeEsp];
+  view.innerHTML=`<div class="group-heading"><h2>${s.specialty}</h2></div>`;
+  s.topics.forEach(t=>view.appendChild(topicCard(t)));
+}
+
+/* ============================================================
    RENDER: FLASHCARDS
    ============================================================ */
 function renderFlash(){
@@ -957,7 +2139,8 @@ function renderFlash(){
    ============================================================ */
 function renderQuiz(){
   const view=document.getElementById('view');
-  if(state.quizOrder.length===0) buildQuizOrder();
+  const bank = state.quizBank==='esp' ? QUESTIONS_GENERAL : QUESTIONS;
+  if(state.quizOrder.length===0) buildQuizOrder(state.quizBank);
 
   if(state.quizIndex >= state.quizOrder.length){
     const pct=Math.round((state.quizScore/state.quizOrder.length)*100);
@@ -967,11 +2150,11 @@ function renderQuiz(){
         <p>${pct}% de aciertos. ${pct>=80?'Excelente dominio del tema.':pct>=60?'Vas bien — repasa los grupos con más fallos.':'Conviene repasar la sección de Referencia antes de reintentar.'}</p>
         <button class="quiz-next" id="quizRestart">Reintentar quiz</button>
       </div>`;
-    document.getElementById('quizRestart').onclick=()=>{ buildQuizOrder(); renderQuiz(); };
+    document.getElementById('quizRestart').onclick=()=>{ buildQuizOrder(state.quizBank); renderQuiz(); };
     return;
   }
 
-  const qData = QUESTIONS[state.quizOrder[state.quizIndex]];
+  const qData = bank[state.quizOrder[state.quizIndex]];
   if(!qData._opts || !state.quizAnswered){
     // build options fresh each time we land on an unanswered question
   }
@@ -1028,12 +2211,29 @@ function render(){
   document.querySelectorAll('.mode-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.mode===state.mode);
   });
-  const searchable = (state.mode==='ref' || state.mode==='casos');
+  document.querySelectorAll('.section-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.section===state.section);
+  });
+  document.getElementById('modeSwitchAtb').style.display = state.section==='atb' ? 'flex' : 'none';
+  document.getElementById('modeSwitchEsp').style.display = state.section==='esp' ? 'flex' : 'none';
+  document.getElementById('stainLegend').style.display = state.section==='atb' ? 'flex' : 'none';
+
+  if(state.section==='esp'){
+    document.getElementById('brandTitle').innerHTML = 'Guía CACES<br>Completa';
+    document.getElementById('brandSubtitle').textContent = 'Las 16 especialidades del examen: oftalmología, trauma, reumatología, ORL, hematología, nefrología, salud pública, dermatología, genitourinario, gineco-obstetricia, pediatría, bioética, cirugía, medicina interna y psiquiatría.';
+  }else{
+    document.getElementById('brandTitle').innerHTML = 'Atlas de<br>Antibióticos';
+    document.getElementById('brandSubtitle').textContent = 'Mecanismo, espectro y uso clínico, organizados por grupo farmacológico.';
+  }
+
+  const searchable = (state.mode==='ref' || state.mode==='casos' || state.mode==='espref');
   document.getElementById('searchWrap').style.display = searchable ? 'block' : 'none';
   document.getElementById('searchInput').placeholder = state.mode==='casos'
     ? 'Buscar por especialidad, caso o esquema…'
+    : state.mode==='espref'
+    ? 'Buscar tema, síndrome o dato…'
     : 'Buscar antibiótico, germen o caso…';
-  document.getElementById('mobileGroups').style.display = (state.mode==='ref' && window.innerWidth<=860) ? 'block' : 'none';
+  document.getElementById('mobileGroups').style.display = ((state.mode==='ref' || state.mode==='espref') && window.innerWidth<=860) ? 'block' : 'none';
 
   renderGroupNav();
 
@@ -1041,22 +2241,38 @@ function render(){
   else if(state.mode==='casos') renderCasos();
   else if(state.mode==='flash') renderFlash();
   else if(state.mode==='quiz') renderQuiz();
+  else if(state.mode==='espref') renderEspecialidad();
+  else if(state.mode==='espquiz') renderQuiz();
 }
 
-document.getElementById('modeSwitch').addEventListener('click', (e)=>{
+document.getElementById('sectionSwitch').addEventListener('click', (e)=>{
+  const btn=e.target.closest('.section-btn');
+  if(!btn) return;
+  state.section=btn.dataset.section;
+  state.search='';
+  document.getElementById('searchInput').value='';
+  state.mode = state.section==='esp' ? 'espref' : 'ref';
+  render();
+});
+
+function handleModeClick(e){
   const btn=e.target.closest('.mode-btn');
   if(!btn) return;
   state.mode=btn.dataset.mode;
   state.search='';
   document.getElementById('searchInput').value='';
   if(state.mode==='flash' && state.flashDeck.length===0) buildFlashDeck();
-  if(state.mode==='quiz' && state.quizOrder.length===0) buildQuizOrder();
+  if(state.mode==='quiz' && state.quizOrder.length===0) buildQuizOrder('atb');
+  if(state.mode==='espquiz' && (state.quizOrder.length===0 || state.quizBank!=='esp')) buildQuizOrder('esp');
   render();
-});
+}
+document.getElementById('modeSwitchAtb').addEventListener('click', handleModeClick);
+document.getElementById('modeSwitchEsp').addEventListener('click', handleModeClick);
 
 document.getElementById('searchInput').addEventListener('input',(e)=>{
   state.search=e.target.value;
   if(state.mode==='casos') renderCasos();
+  else if(state.mode==='espref') renderEspecialidad();
   else renderReference();
 });
 
